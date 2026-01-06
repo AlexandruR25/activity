@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <div id="setup-screen" class="screen active">
+            <h1>Activity <span class="accent">Digital</span></h1>
+            <p>Adaugă echipele pentru a începe!</p>
+            
+            <div class="input-group">
+                <input type="text" id="team-input" placeholder="Nume Echipă (ex: Tigrii)">
+                <button id="add-team-btn">➕ Adaugă</button>
+            </div>
+
+            <ul id="team-list"></ul>
+
+            <button id="start-game-btn" class="main-btn" disabled>START JOC 🚀</button>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="header">
+                <div class="team-turn">Randul echipei: <span id="current-team-name">...</span></div>
+                <div class="score-display">Scor: <span id="current-score">0</span></div>
+            </div>
+
+            <div class="card-area">
+                <div class="card" id="activity-card">
+                    <h2 id="activity-type">MIMĂ</h2>
+                    <h1 id="activity-word">????</h1>
+                    <p id="activity-points">3 Puncte</p>
+                </div>
+            </div>
+
+            <div class="timer-container">
+                <div id="timer">60</div>
+            </div>
+
+            <div class="controls">
+                <button id="start-round-btn" class="action-btn start">Vezi Cuvântul & Start Timp</button>
+                
+                <div id="decision-buttons" class="hidden">
+                    <button id="fail-btn" class="action-btn fail">❌ Nu a ghicit</button>
+                    <button id="success-btn" class="action-btn success">✅ A ghicit!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
