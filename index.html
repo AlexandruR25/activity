@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Activity Party Pro</title>
+    <title>Activity Speed Run</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,9 +12,9 @@
             --accent: #ff0055;
             --accent-glow: rgba(255, 0, 85, 0.4);
             --text-main: #ffffff;
-            --card-draw: #ffeaa7;
-            --card-mime: #74b9ff;
-            --card-speak: #55efc4;
+            --success: #00b894;
+            --skip: #fab1a0;
+            --fail: #d63031;
         }
 
         * { box-sizing: border-box; }
@@ -32,110 +32,127 @@
 
         .app-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px; /* Am mărit lățimea pentru Desktop */
             background: var(--bg-panel);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 15px;
+            padding: 20px;
             position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* SCREEN MANAGEMENT */
+        /* SCREENS */
         .screen { display: none; flex-direction: column; flex: 1; }
         .screen.active { display: flex; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* SETUP SCREEN */
-        .logo-area { text-align: center; margin: 30px 0; }
-        h1 { font-weight: 800; font-size: 2.2rem; margin: 0; line-height: 1; }
+        /* HEADER & SETUP */
+        .logo-area { text-align: center; margin: 20px 0; }
+        h1 { font-weight: 800; font-size: 2.5rem; margin: 0; line-height: 1; letter-spacing: -1px; }
         .accent { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
         
-        .setup-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .setup-box { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .input-group { display: flex; gap: 10px; margin-top: 10px; }
         input { 
-            flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #444; 
-            background: #2a2a3a; color: white; font-family: inherit; font-size: 1rem;
+            flex: 1; padding: 15px; border-radius: 10px; border: 1px solid #444; 
+            background: #2a2a3a; color: white; font-family: inherit; font-size: 1.1rem;
         }
-        .icon-btn { background: var(--accent); color: white; border: none; padding: 0 20px; border-radius: 8px; font-size: 1.2rem; cursor: pointer; }
+        .icon-btn { background: var(--accent); color: white; border: none; padding: 0 25px; border-radius: 10px; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
+        .icon-btn:hover { background: #ff3377; }
         
-        #team-list { list-style: none; padding: 0; margin-top: 15px; }
+        #team-list { list-style: none; padding: 0; margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
         #team-list li { 
-            padding: 10px; background: rgba(0,0,0,0.3); margin-bottom: 5px; 
-            border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 15px; background: rgba(0,0,0,0.3); 
+            border-radius: 8px; display: flex; align-items: center; justify-content: space-between;
+            font-weight: 600;
         }
-        .team-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        .team-dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; margin-right: 10px; box-shadow: 0 0 5px currentColor; }
 
         .main-btn {
             background: linear-gradient(135deg, var(--accent), #ff5e62);
-            border: none; color: white; padding: 18px; font-size: 1.2rem; font-weight: 800;
-            border-radius: 12px; width: 100%; cursor: pointer; margin-top: auto; margin-bottom: 20px;
-            box-shadow: 0 5px 20px var(--accent-glow);
+            border: none; color: white; padding: 20px; font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            border-radius: 15px; width: 100%; cursor: pointer; margin-top: auto; margin-bottom: 20px;
+            box-shadow: 0 5px 25px var(--accent-glow); transition: transform 0.1s;
         }
+        .main-btn:active { transform: scale(0.98); }
         .main-btn:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
 
-        /* GAME SCREEN */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; }
-        .timer-box { font-size: 1.8rem; font-weight: 800; color: var(--accent); border: 2px solid var(--accent); padding: 0 15px; border-radius: 50px; min-width: 80px; text-align: center; }
-        #current-team-name { color: white; margin: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+        /* GAME HUD */
+        .top-bar { 
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; 
+            background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .timer-box { 
+            font-size: 2.2rem; font-weight: 800; color: white; background: var(--accent);
+            width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        .team-info { display: flex; flex-direction: column; }
+        .team-label { font-size: 0.8rem; color: #aaa; text-transform: uppercase; }
+        #current-team-name { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; }
 
-        /* TABLA DE JOC */
+        /* BOARD */
         .board-container { 
-            background: rgba(0,0,0,0.2); border-radius: 15px; padding: 10px; 
-            margin-bottom: 20px; overflow-y: auto; max-height: 200px;
+            background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px; 
+            margin-bottom: 20px; overflow-y: auto; max-height: 250px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        #board { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+        #board { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
         .tile {
-            width: 32px; height: 32px; background: #2a2a3a; border-radius: 6px;
+            width: 36px; height: 36px; background: #2a2a3a; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            position: relative; font-size: 0.7rem; color: #555;
+            position: relative; font-size: 0.8rem; color: #555; font-weight: bold;
         }
-        .tile.finish { background: gold; color: black; font-weight: bold; border: 2px solid orange; }
+        .tile.finish { background: gold; color: black; border: 2px solid orange; box-shadow: 0 0 10px gold; }
         
         .pawn {
-            width: 10px; height: 10px; border-radius: 50%; position: absolute;
-            box-shadow: 0 0 5px rgba(0,0,0,0.8); border: 1px solid white; z-index: 2;
+            width: 14px; height: 14px; border-radius: 50%; position: absolute;
+            border: 2px solid white; z-index: 2; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* CARDS GRID (AICI ERA PROBLEMA) */
-        .instruction { text-align: center; color: #aaa; margin-bottom: 10px; }
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; }
+        /* PRE-ROUND PHASE */
+        .pre-round-card {
+            background: white; color: #222; padding: 40px; border-radius: 20px;
+            text-align: center; margin: auto 0;
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+        .category-badge {
+            font-size: 1.5rem; font-weight: 800; padding: 10px 30px; border-radius: 50px;
+            color: #222; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
         
-        .selection-card {
-            background: white; color: #222; padding: 10px; border-radius: 12px;
-            cursor: pointer; position: relative; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; text-align: center;
-            transition: transform 0.1s; height: 110px;
+        /* ACTIVE GAME PHASE */
+        .game-area { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; }
+        
+        .word-card {
+            background: white; color: #222; padding: 40px 20px; border-radius: 25px;
+            text-align: center; margin-bottom: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: popIn 0.3s;
         }
-        .selection-card:active { transform: scale(0.95); }
-        .sc-points { 
-            position: absolute; top: 5px; right: 5px; background: #222; color: white; 
-            font-size: 0.8rem; width: 22px; height: 22px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; font-weight: bold;
-        }
-        .sc-icon { font-size: 2.2rem; margin-bottom: 5px; }
-        .sc-type { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .card-desen { background: var(--card-draw); }
-        .card-mima { background: var(--card-mime); }
-        .card-vorba { background: var(--card-speak); }
+        .word-meta { display: flex; justify-content: space-between; color: #666; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem; }
+        #word-text { font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin: 10px 0; color: #2d3436; text-transform: uppercase; }
+        #word-points { background: #222; color: white; padding: 5px 12px; border-radius: 20px; }
 
-        /* ACTIVE CARD */
-        .hidden { display: none !important; }
-        .active-card {
-            background: white; color: #222; padding: 40px 20px; border-radius: 20px;
-            text-align: center; margin: 20px 0; box-shadow: 0 0 30px rgba(255,255,255,0.1);
-        }
-        #ac-word { font-size: 2rem; color: #d63031; text-transform: uppercase; margin: 20px 0; }
-        .decision-buttons { display: flex; gap: 10px; margin-top: auto; }
-        .btn { flex: 1; padding: 15px; border: none; border-radius: 10px; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
-        .fail { background: #e17055; }
-        .success { background: #00b894; }
+        .controls { display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px; height: 80px; }
+        .btn-action { border: none; border-radius: 15px; font-weight: 800; font-size: 1.2rem; cursor: pointer; color: white; transition: transform 0.1s; }
+        .btn-action:active { transform: scale(0.95); }
+        .btn-skip { background: var(--text-muted); background-color: #636e72; }
+        .btn-success { background: var(--success); font-size: 1.5rem; }
+
+        .progress-indicator { text-align: center; color: #aaa; margin-top: 10px; letter-spacing: 2px; }
 
         /* WIN SCREEN */
-        .confetti { font-size: 4rem; text-align: center; margin-bottom: 20px; animation: spin 2s infinite linear; }
+        .confetti { font-size: 5rem; text-align: center; margin-bottom: 20px; animation: spin 3s infinite linear; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .winner-text { color: gold; font-size: 2.5rem; text-align: center; text-shadow: 0 0 20px orange; }
+        .winner-text { color: gold; font-size: 3rem; text-align: center; text-shadow: 0 0 20px orange; margin: 20px 0; }
+
+        /* Categorii culori */
+        .cat-desen { background: #ffeaa7; }
+        .cat-mima { background: #74b9ff; }
+        .cat-vorba { background: #55efc4; }
 
     </style>
 </head>
@@ -145,17 +162,19 @@
     
     <div id="setup-screen" class="screen active">
         <div class="logo-area">
-            <h1>ACTIVITY <span class="accent">PARTY</span></h1>
-            <p style="color: #666;">Made by Alexutzu</p>
+            <h1>ACTIVITY <span class="accent">SPEED</span></h1>
+            <p style="color: #888;">Ediția Rapid Fire • 6 Cuvinte / Rundă</p>
         </div>
         
         <div class="setup-box">
-            <label style="color:#aaa; font-size:0.9rem;">Puncte necesare victoriei:</label>
-            <input type="number" id="win-score-input" value="20" min="5" max="50" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <label style="color:#ddd;">Puncte Victorie:</label>
+                <input type="number" id="win-score-input" value="40" min="10" max="100" style="width: 80px; text-align: center; padding: 10px;">
+            </div>
 
-            <label style="color:#aaa; font-size:0.9rem;">Adaugă Echipe:</label>
+            <label style="color:#ddd; display:block; margin-bottom:5px;">Adaugă Echipă:</label>
             <div class="input-group">
-                <input type="text" id="team-input" placeholder="Nume (ex: Tigrii)">
+                <input type="text" id="team-input" placeholder="Nume (ex: Leii)">
                 <button onclick="addTeam()" class="icon-btn">➕</button>
             </div>
             <ul id="team-list"></ul>
@@ -166,9 +185,9 @@
 
     <div id="game-screen" class="screen">
         <div class="top-bar">
-            <div>
-                <span style="font-size:0.8rem; color:#aaa;">Rândul echipei:</span>
-                <h2 id="current-team-name">...</h2>
+            <div class="team-info">
+                <span class="team-label">Rândul echipei:</span>
+                <div id="current-team-name">...</div>
             </div>
             <div class="timer-box">
                 <span id="timer">60</span>
@@ -179,21 +198,31 @@
             <div id="board"></div>
         </div>
 
-        <div id="selection-phase">
-            <p class="instruction">Alegeți o provocare:</p>
-            <div id="cards-grid" class="cards-grid"></div>
+        <div id="pre-round" class="game-area">
+            <div class="pre-round-card">
+                <h3 style="margin:0; color:#666;">Urmează runda de:</h3>
+                <div id="next-category" class="category-badge cat-desen">DESEN ✏️</div>
+                <p style="color:#666; font-size:0.9rem;">
+                    Aveți <b>60 secunde</b> să ghiciți până la<br><b>6 cuvinte</b> din această categorie.
+                </p>
+                <button onclick="startRoundLogic()" class="main-btn" style="margin:0;">START TIMP ⏱️</button>
+            </div>
         </div>
 
-        <div id="active-card-phase" class="hidden">
-            <div class="active-card">
-                <div style="font-weight:bold; color:#666;">
-                    <span id="ac-icon"></span> <span id="ac-type"></span> (+<span id="ac-points"></span>p)
+        <div id="active-round" class="game-area hidden" style="display:none;">
+            <div class="progress-indicator">CUVÂNTUL <span id="word-index">1</span> DIN 6</div>
+            
+            <div class="word-card">
+                <div class="word-meta">
+                    <span id="card-type">DESEN</span>
+                    <span id="word-points">3p</span>
                 </div>
-                <h1 id="ac-word">...</h1>
+                <div id="word-text">CUVÂNT</div>
             </div>
-            <div class="decision-buttons">
-                <button onclick="endRound(false)" class="btn fail">❌ Eșec</button>
-                <button onclick="endRound(true)" class="btn success">✅ Succes</button>
+
+            <div class="controls">
+                <button onclick="nextWord(false)" class="btn-action btn-skip">PAS (0p)</button>
+                <button onclick="nextWord(true)" class="btn-action btn-success">✅ CORECT</button>
             </div>
         </div>
     </div>
@@ -202,40 +231,85 @@
         <div class="confetti">🎉 🏆 🎉</div>
         <h1 style="text-align: center;">CÂȘTIGĂTORII!</h1>
         <h2 id="winner-name" class="winner-text">...</h2>
-        <button onclick="location.reload()" class="main-btn">Joacă din nou 🔁</button>
+        <button onclick="location.reload()" class="main-btn">Joc Nou 🔁</button>
     </div>
 
 </div>
 
 <audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="tick-sound" src="https://actions.google.com/sounds/v1/alarms/mechanical_clock_ticking.ogg"></audio>
 
 <script>
-    // --- DATE ---
+    // --- BAZA DE DATE (Multe cuvinte, dificultate variata) ---
     const DB = {
-        DESEN: ["Umbrelă", "Pizza", "Fantoma", "Avion", "Soare", "Floare", "Câine", "Casă", "Ochelari", "Bec", "Fluture", "Tort", "Girafă", "Vulcan", "Piramidă"],
-        MIMA: ["Fotbalist", "Maimuță", "Chitarist", "Balet", "Somnuros", "Pescuit", "Dirijor", "Boxer", "Bucătar", "Pinguin", "Robot", "Zombi", "DJ", "Polițist"],
-        VORBA: ["Vacanta", "Calculator", "Scoala", "Telefon", "Internet", "Prietenie", "Libertate", "Muzică", "Weekend", "Cinema", "Facebook", "Iarnă", "Nuntă"]
+        DESEN: [
+            {w:"Umbrelă",p:3}, {w:"Pizza",p:3}, {w:"Fantoma",p:4}, {w:"Avion",p:3}, {w:"Soare",p:2}, 
+            {w:"Floare",p:2}, {w:"Câine",p:3}, {w:"Casă",p:2}, {w:"Ochelari",p:3}, {w:"Bec",p:3}, 
+            {w:"Fluture",p:4}, {w:"Tort",p:3}, {w:"Girafă",p:4}, {w:"Vulcan",p:4}, {w:"Piramidă",p:5},
+            {w:"Elicopter",p:5}, {w:"Cactus",p:4}, {w:"Păianjen",p:3}, {w:"Dinozaur",p:5}, {w:"Castel",p:4},
+            {w:"Bicicletă",p:4}, {w:"Foarfece",p:3}, {w:"Cheie",p:2}, {w:"Măr",p:2}, {w:"Barcă",p:3},
+            {w:"Șarpe",p:3}, {w:"Ciocan",p:3}, {w:"Tractor",p:5}, {w:"Laptop",p:4}, {w:"Telefon",p:3},
+            {w:"Semafor",p:4}, {w:"Iepure",p:3}, {w:"Pisică",p:2}, {w:"Clovn",p:5}, {w:"Balon",p:2},
+            {w:"Pod",p:4}, {w:"Scarabeu",p:5}, {w:"Vampir",p:4}, {w:"Mumie",p:4}, {w:"Sirena",p:5},
+            {w:"Ancoră",p:3}, {w:"Topor",p:3}, {w:"Inimă",p:2}, {w:"Stea",p:2}, {w:"Lună",p:2}
+        ],
+        MIMA: [
+            {w:"Fotbalist",p:3}, {w:"Maimuță",p:3}, {w:"Chitarist",p:3}, {w:"Balet",p:4}, {w:"Somnuros",p:2}, 
+            {w:"Pescuit",p:3}, {w:"Dirijor",p:4}, {w:"Boxer",p:3}, {w:"Bucătar",p:3}, {w:"Pinguin",p:4}, 
+            {w:"Robot",p:3}, {w:"Zombi",p:3}, {w:"DJ",p:4}, {w:"Polițist",p:3}, {w:"Doctor",p:3},
+            {w:"Frizer",p:3}, {w:"Scafandru",p:5}, {w:"Pompier",p:4}, {w:"Vânător",p:4}, {w:"Pictor",p:3},
+            {w:"Kangur",p:4}, {w:"Broască",p:3}, {w:"Găină",p:3}, {w:"Elefant",p:4}, {w:"Șofer",p:2},
+            {w:"Pilot",p:4}, {w:"Tenismen",p:3}, {w:"Schior",p:4}, {w:"Pianist",p:4}, {w:"Violonist",p:4},
+            {w:"Îndrăgostit",p:3}, {w:"Supărat",p:2}, {w:"Râs",p:2}, {w:"Plâns",p:2}, {w:"Strănut",p:2},
+            {w:"Fotograf",p:3}, {w:"Model",p:3}, {w:"Rege",p:3}, {w:"Cântăreț",p:3}, {w:"Balerină",p:4},
+            {w:"Magician",p:5}, {w:"Fantomă",p:3}, {w:"Ninja",p:5}, {w:"Samurai",p:5}, {w:"Cowboy",p:4}
+        ],
+        VORBA: [
+            {w:"Vacanta",p:3}, {w:"Calculator",p:3}, {w:"Scoala",p:2}, {w:"Telefon",p:2}, {w:"Internet",p:3}, 
+            {w:"Prietenie",p:4}, {w:"Libertate",p:5}, {w:"Muzică",p:3}, {w:"Weekend",p:2}, {w:"Cinema",p:3}, 
+            {w:"Facebook",p:3}, {w:"Iarnă",p:2}, {w:"Nuntă",p:3}, {w:"Zi de naștere",p:3}, {w:"Cadou",p:2},
+            {w:"Examen",p:3}, {w:"Bani",p:2}, {w:"Dragoste",p:4}, {w:"Politică",p:4}, {w:"Religie",p:4},
+            {w:"Spital",p:3}, {w:"Restaurant",p:3}, {w:"Hotel",p:3}, {w:"Aeroport",p:3}, {w:"Gara",p:3},
+            {w:"Autobuz",p:2}, {w:"Metrou",p:3}, {w:"Capitală",p:4}, {w:"România",p:3}, {w:"Europa",p:4},
+            {w:"Planeta",p:4}, {w:"Univers",p:5}, {w:"Extraterestru",p:4}, {w:"Viitor",p:5}, {w:"Trecut",p:5},
+            {w:"Istorie",p:4}, {w:"Matematică",p:4}, {w:"Fizică",p:5}, {w:"Chimie",p:5}, {w:"Biologie",p:4},
+            {w:"Sport",p:2}, {w:"Fotbal",p:2}, {w:"Tenis",p:3}, {w:"Baschet",p:3}, {w:"Înot",p:3}
+        ]
     };
     
-    const COLORS = ['#ff595e', '#1982c4', '#8ac926', '#ffca3a', '#6a4c93'];
+    // --- VARIABLES ---
+    const COLORS = ['#ff595e', '#1982c4', '#8ac926', '#ffca3a', '#9b59b6'];
     let teams = [];
     let currentTeamIndex = 0;
-    let targetScore = 20;
+    let targetScore = 40;
     let timerInterval;
     let timeLeft = 60;
-    let currentPoints = 0;
+    
+    // State Runda Curenta
+    let roundWords = []; // Lista de 6 cuvinte pt runda asta
+    let currentWordIdx = 0;
+    let roundScore = 0; // Puncte acumulate in runda asta
 
-    // --- FUNCTII ---
+    // --- SETUP FUNCTIONS ---
     function addTeam() {
         const input = document.getElementById('team-input');
         const name = input.value.trim();
         if(!name) return;
         
-        const color = COLORS[teams.length % COLORS.length];
+        // Limita de 5 echipe
+        if(teams.length >= 5) { alert("Maxim 5 echipe!"); return; }
+
+        const color = COLORS[teams.length];
         teams.push({ name: name, score: 0, color: color });
         
         const li = document.createElement('li');
-        li.innerHTML = `<span style="display:flex; align-items:center"><span class="team-dot" style="background:${color}"></span>${name}</span>`;
+        li.innerHTML = `
+            <span style="display:flex; align-items:center">
+                <span class="team-dot" style="background:${color}"></span>
+                ${name}
+            </span>
+            <span>0p</span>
+        `;
         document.getElementById('team-list').appendChild(li);
         
         input.value = '';
@@ -243,7 +317,7 @@
     }
 
     function startGame() {
-        targetScore = parseInt(document.getElementById('win-score-input').value) || 20;
+        targetScore = parseInt(document.getElementById('win-score-input').value) || 40;
         
         // Generare tabla
         const board = document.getElementById('board');
@@ -258,131 +332,185 @@
         }
 
         switchScreen('game-screen');
-        updateUI();
-        generateCards();
+        prepareTurn(); // Pregatim prima runda
     }
 
-    function generateCards() {
-        const grid = document.getElementById('cards-grid');
-        grid.innerHTML = '';
+    // --- GAME LOGIC ---
+
+    // 1. Pregateste runda (Alege Categorie + 6 Cuvinte)
+    function prepareTurn() {
+        const team = teams[currentTeamIndex];
         
+        // Update UI Header
+        const nameEl = document.getElementById('current-team-name');
+        nameEl.textContent = team.name;
+        nameEl.style.color = team.color;
+        
+        // Ascunde jocul activ, arata cardul de pregatire
+        document.getElementById('pre-round').style.display = 'flex';
+        document.getElementById('active-round').style.display = 'none';
+
+        // Alege categorie random
+        const cats = ['DESEN', 'MIMA', 'VORBA'];
         const types = [
-            { id: 'DESEN', label: 'DESEN', icon: '✏️', cls: 'card-desen', list: DB.DESEN },
-            { id: 'MIMA', label: 'MIMĂ', icon: '🙊', cls: 'card-mima', list: DB.MIMA },
-            { id: 'VORBA', label: 'VORBEȘTE', icon: '🗣️', cls: 'card-vorba', list: DB.VORBA }
+            {id:'DESEN', label:'DESEN ✏️', class:'cat-desen'},
+            {id:'MIMA', label:'MIMĂ 🙊', class:'cat-mima'},
+            {id:'VORBA', label:'VORBEȘTE 🗣️', class:'cat-vorba'}
         ];
-
-        // Luăm câte 2 din fiecare
-        let options = [];
-        types.forEach(t => {
-            const words = [...t.list].sort(() => 0.5 - Math.random()).slice(0, 2);
-            words.forEach(w => {
-                options.push({ ...t, word: w, points: Math.floor(Math.random() * 3) + 3 });
-            });
-        });
-
-        // Le amestecăm
-        options.sort(() => 0.5 - Math.random());
-
-        options.forEach(opt => {
-            const btn = document.createElement('div');
-            btn.className = `selection-card ${opt.cls}`;
-            btn.innerHTML = `
-                <div class="sc-points">${opt.points}</div>
-                <div class="sc-icon">${opt.icon}</div>
-                <div class="sc-type">${opt.label}</div>
-            `;
-            btn.onclick = () => startRound(opt);
-            grid.appendChild(btn);
-        });
         
-        document.getElementById('selection-phase').classList.remove('hidden');
-        document.getElementById('active-card-phase').classList.add('hidden');
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        
+        // Afiseaza categoria
+        const catBadge = document.getElementById('next-category');
+        catBadge.className = `category-badge ${randomType.class}`;
+        catBadge.textContent = randomType.label;
+
+        // Genereaza 6 cuvinte unice din acea categorie
+        // Amestecam lista mare
+        const fullList = DB[randomType.id].sort(() => 0.5 - Math.random());
+        // Luam primele 6
+        roundWords = fullList.slice(0, 6).map(item => ({
+            ...item, 
+            typeLabel: randomType.id // Pastram tipul
+        }));
+        
+        currentWordIdx = 0;
+        roundScore = 0;
+
+        // Reset Timer UI
+        document.getElementById('timer').textContent = "60";
+        document.querySelector('.timer-box').style.background = "var(--accent)";
+        updateBoardPawn();
     }
 
-    function startRound(card) {
-        currentPoints = card.points;
-        document.getElementById('selection-phase').classList.add('hidden');
-        document.getElementById('active-card-phase').classList.remove('hidden');
+    // 2. Start Timer si Arata Primul Cuvant
+    function startRoundLogic() {
+        document.getElementById('pre-round').style.display = 'none';
+        document.getElementById('active-round').style.display = 'flex';
         
-        document.getElementById('ac-icon').textContent = card.icon;
-        document.getElementById('ac-type').textContent = card.label;
-        document.getElementById('ac-points').textContent = card.points;
-        document.getElementById('ac-word').textContent = card.word;
-
+        showCurrentWord();
         startTimer();
+    }
+
+    function showCurrentWord() {
+        if(currentWordIdx >= roundWords.length) {
+            endTurn(); // S-au terminat cuvintele
+            return;
+        }
+
+        const wordObj = roundWords[currentWordIdx];
+        
+        // Update UI Card
+        document.getElementById('word-index').textContent = currentWordIdx + 1;
+        document.getElementById('card-type').textContent = wordObj.typeLabel;
+        document.getElementById('word-points').textContent = wordObj.p + "p";
+        document.getElementById('word-text').textContent = wordObj.w;
+
+        // Culoare card in functie de tip
+        const card = document.querySelector('.word-card');
+        if(wordObj.typeLabel === 'DESEN') card.style.borderTop = "10px solid #ffeaa7";
+        if(wordObj.typeLabel === 'MIMA') card.style.borderTop = "10px solid #74b9ff";
+        if(wordObj.typeLabel === 'VORBA') card.style.borderTop = "10px solid #55efc4";
+    }
+
+    function nextWord(success) {
+        if(success) {
+            roundScore += roundWords[currentWordIdx].p;
+        }
+        currentWordIdx++;
+        showCurrentWord();
     }
 
     function startTimer() {
         timeLeft = 60;
         const disp = document.getElementById('timer');
-        disp.textContent = timeLeft;
-        disp.style.color = "var(--accent)";
         
         if(timerInterval) clearInterval(timerInterval);
+        
         timerInterval = setInterval(() => {
             timeLeft--;
             disp.textContent = timeLeft;
-            if(timeLeft <= 10) disp.style.color = "red";
+            
+            if(timeLeft <= 10) {
+                document.querySelector('.timer-box').style.background = "#d63031";
+            }
+            
             if(timeLeft <= 0) {
                 clearInterval(timerInterval);
                 document.getElementById('alarm-sound').play();
+                alert("⏰ TIMPUL A EXPIRAT!");
+                endTurn();
             }
         }, 1000);
     }
 
-    function endRound(success) {
+    function endTurn() {
         clearInterval(timerInterval);
         
-        if(success) {
-            teams[currentTeamIndex].score += currentPoints;
-            if(teams[currentTeamIndex].score >= targetScore) {
-                teams[currentTeamIndex].score = targetScore;
-                updateUI();
-                switchScreen('win-screen');
-                document.getElementById('winner-name').textContent = teams[currentTeamIndex].name;
-                return;
-            }
-        }
+        // Adauga scorul la echipa
+        teams[currentTeamIndex].score += roundScore;
         
+        // Verifica daca a depasit limita
+        if(teams[currentTeamIndex].score >= targetScore) {
+            teams[currentTeamIndex].score = targetScore;
+            updateBoardPawn();
+            showWinScreen();
+            return;
+        }
+
+        updateBoardPawn();
+
+        // Trecem la urmatoarea echipa
         currentTeamIndex = (currentTeamIndex + 1) % teams.length;
-        updateUI();
-        generateCards();
+        
+        // Pauza scurta inainte de a arata ecranul de pregatire pt urmatoarea echipa
+        setTimeout(() => {
+            prepareTurn();
+        }, 1000);
     }
 
-    function updateUI() {
-        // Update nume echipa
-        const team = teams[currentTeamIndex];
-        const nameEl = document.getElementById('current-team-name');
-        nameEl.textContent = team.name;
-        nameEl.style.color = team.color;
-        
-        // Update Pioni
+    function updateBoardPawn() {
+        // Sterge pionii vechi
         document.querySelectorAll('.pawn').forEach(p => p.remove());
+        
         teams.forEach((t, idx) => {
-            const tile = document.getElementById('tile-' + t.score);
+            // Asigura-te ca scorul nu e mai mare decat tabla
+            let pos = t.score;
+            if(pos > targetScore) pos = targetScore;
+
+            const tile = document.getElementById('tile-' + pos);
             if(tile) {
                 const pawn = document.createElement('div');
                 pawn.className = 'pawn';
                 pawn.style.background = t.color;
-                // Offset mic ca sa nu se suprapuna perfect
-                pawn.style.left = (5 + idx * 5) + 'px';
+                // Pozitionare usoara random sa nu se suprapuna perfect
+                pawn.style.left = (5 + idx * 4) + 'px';
                 pawn.style.bottom = (5 + idx * 2) + 'px';
                 tile.appendChild(pawn);
+                
+                // Scroll la pionul curent
+                if(idx === currentTeamIndex) {
+                    tile.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                }
             }
         });
-        
-        // Scroll la pion
-        const activeTile = document.getElementById('tile-' + team.score);
-        if(activeTile) activeTile.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function showWinScreen() {
+        document.getElementById('winner-name').textContent = teams[currentTeamIndex].name;
+        switchScreen('win-screen');
     }
 
     function switchScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.screen').forEach(s => {
+            s.classList.remove('active');
+            s.style.display = 'none'; // Force hide
+        });
+        const active = document.getElementById(id);
+        active.style.display = 'flex';
+        setTimeout(() => active.classList.add('active'), 10);
     }
 </script>
 
 </body>
 </html>
-
