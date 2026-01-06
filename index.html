@@ -2,69 +2,91 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Activity Party</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="container">
+    <div class="app-container">
+        
         <div id="setup-screen" class="screen active">
-            <h1>Activity <span class="accent">Digital</span></h1>
-            <p>Adaugă echipele pentru a începe!</p>
+            <div class="logo-area">
+                <h1>ACTIVITY <span class="accent">PARTY</span></h1>
+                <p>Editia Digitală Premium</p>
+            </div>
             
-            <div class="input-group">
-                <input type="text" id="team-input" placeholder="Nume Echipă (ex: Tigrii)">
-                <button id="add-team-btn">➕ Adaugă</button>
+            <div class="setup-box">
+                <h3>1. Configurare Joc</h3>
+                <label>Puncte pentru victorie:</label>
+                <input type="number" id="win-score-input" value="30" min="10" max="100">
+
+                <h3>2. Adaugă Echipe</h3>
+                <div class="input-group">
+                    <input type="text" id="team-input" placeholder="Nume Echipă (ex: Leii)">
+                    <button id="add-team-btn" class="icon-btn">➕</button>
+                </div>
+                <ul id="team-list"></ul>
             </div>
 
-            <ul id="team-list"></ul>
-
-            <button id="start-game-btn" class="main-btn" disabled>START JOC 🚀</button>
+            <button id="start-game-btn" class="main-btn" disabled>START PARTY 🚀</button>
         </div>
 
         <div id="game-screen" class="screen">
-            <div class="header">
-                <div class="team-turn">Randul echipei: <span id="current-team-name">...</span></div>
-                <div class="score-display">Scor: <span id="current-score">0</span></div>
-            </div>
-
-            <div id="scoreboard"></div>
-
-            <div class="card-area">
-                <div class="card" id="activity-card">
-                    <h2 id="activity-type">MIMĂ</h2>
-                    <h1 id="activity-word">????</h1>
-                    <p id="activity-points">3 Puncte</p>
+            <div class="top-bar">
+                <div class="turn-info">
+                    <span class="label">Rândul echipei:</span>
+                    <h2 id="current-team-name">Echipa 1</h2>
+                </div>
+                <div class="timer-box">
+                    <span id="timer">60</span>s
                 </div>
             </div>
 
-            <div class="timer-container">
-                <div id="timer">60</div>
+            <div class="board-container">
+                <div id="board"></div>
             </div>
 
-            <div id="board"></div>
-
-            <div class="controls">
-                <button id="start-round-btn" class="action-btn start">Vezi Cuvântul & Start Timp</button>
+            <div class="action-area">
                 
-                <div id="decision-buttons" class="hidden">
-                    <button id="fail-btn" class="action-btn fail">❌ Nu a ghicit</button>
-                    <button id="success-btn" class="action-btn success">✅ A ghicit!</button>
+                <div id="selection-phase">
+                    <p class="instruction">Alegeți o provocare:</p>
+                    <div class="cards-grid" id="cards-grid">
+                        </div>
                 </div>
+
+                <div id="active-card-phase" class="hidden">
+                    <div class="active-card">
+                        <div class="card-header">
+                            <span id="ac-icon">✏️</span>
+                            <span id="ac-type">DESEN</span>
+                            <span id="ac-points">3</span>
+                        </div>
+                        <h1 id="ac-word">CUVÂNT</h1>
+                    </div>
+                    
+                    <div class="decision-buttons">
+                        <button id="fail-btn" class="btn fail">❌ Eșec</button>
+                        <button id="success-btn" class="btn success">✅ Succes</button>
+                    </div>
+                </div>
+
             </div>
+            
+            <div id="mini-scoreboard"></div>
         </div>
 
         <div id="win-screen" class="screen">
-            <h1 id="winner-name"></h1>
-            <button onclick="location.reload()" class="main-btn">Joacă din nou 🔁</button>
+            <div class="confetti">🎉</div>
+            <h1>AVEM UN CÂȘTIGĂTOR!</h1>
+            <h2 id="winner-name" class="winner-text">Echipa X</h2>
+            <button onclick="location.reload()" class="main-btn reload">Joacă din nou 🔁</button>
         </div>
 
     </div>
 
     <audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-
     <script src="script.js"></script>
 </body>
 </html>
