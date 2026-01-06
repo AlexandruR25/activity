@@ -3,90 +3,385 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Activity Party</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Activity Party Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-panel: #1e1e2e;
+            --accent: #ff0055;
+            --accent-glow: rgba(255, 0, 85, 0.4);
+            --text-main: #ffffff;
+            --card-draw: #ffeaa7;
+            --card-mime: #74b9ff;
+            --card-speak: #55efc4;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-panel);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            position: relative;
+        }
+
+        /* SCREEN MANAGEMENT */
+        .screen { display: none; flex-direction: column; flex: 1; }
+        .screen.active { display: flex; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* SETUP SCREEN */
+        .logo-area { text-align: center; margin: 30px 0; }
+        h1 { font-weight: 800; font-size: 2.2rem; margin: 0; line-height: 1; }
+        .accent { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
+        
+        .setup-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .input-group { display: flex; gap: 10px; margin-top: 10px; }
+        input { 
+            flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #444; 
+            background: #2a2a3a; color: white; font-family: inherit; font-size: 1rem;
+        }
+        .icon-btn { background: var(--accent); color: white; border: none; padding: 0 20px; border-radius: 8px; font-size: 1.2rem; cursor: pointer; }
+        
+        #team-list { list-style: none; padding: 0; margin-top: 15px; }
+        #team-list li { 
+            padding: 10px; background: rgba(0,0,0,0.3); margin-bottom: 5px; 
+            border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .team-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+
+        .main-btn {
+            background: linear-gradient(135deg, var(--accent), #ff5e62);
+            border: none; color: white; padding: 18px; font-size: 1.2rem; font-weight: 800;
+            border-radius: 12px; width: 100%; cursor: pointer; margin-top: auto; margin-bottom: 20px;
+            box-shadow: 0 5px 20px var(--accent-glow);
+        }
+        .main-btn:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+
+        /* GAME SCREEN */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; }
+        .timer-box { font-size: 1.8rem; font-weight: 800; color: var(--accent); border: 2px solid var(--accent); padding: 0 15px; border-radius: 50px; min-width: 80px; text-align: center; }
+        #current-team-name { color: white; margin: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* TABLA DE JOC */
+        .board-container { 
+            background: rgba(0,0,0,0.2); border-radius: 15px; padding: 10px; 
+            margin-bottom: 20px; overflow-y: auto; max-height: 200px;
+        }
+        #board { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+        .tile {
+            width: 32px; height: 32px; background: #2a2a3a; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; font-size: 0.7rem; color: #555;
+        }
+        .tile.finish { background: gold; color: black; font-weight: bold; border: 2px solid orange; }
+        
+        .pawn {
+            width: 10px; height: 10px; border-radius: 50%; position: absolute;
+            box-shadow: 0 0 5px rgba(0,0,0,0.8); border: 1px solid white; z-index: 2;
+        }
+
+        /* CARDS GRID (AICI ERA PROBLEMA) */
+        .instruction { text-align: center; color: #aaa; margin-bottom: 10px; }
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; }
+        
+        .selection-card {
+            background: white; color: #222; padding: 10px; border-radius: 12px;
+            cursor: pointer; position: relative; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; text-align: center;
+            transition: transform 0.1s; height: 110px;
+        }
+        .selection-card:active { transform: scale(0.95); }
+        .sc-points { 
+            position: absolute; top: 5px; right: 5px; background: #222; color: white; 
+            font-size: 0.8rem; width: 22px; height: 22px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+        }
+        .sc-icon { font-size: 2.2rem; margin-bottom: 5px; }
+        .sc-type { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; }
+
+        .card-desen { background: var(--card-draw); }
+        .card-mima { background: var(--card-mime); }
+        .card-vorba { background: var(--card-speak); }
+
+        /* ACTIVE CARD */
+        .hidden { display: none !important; }
+        .active-card {
+            background: white; color: #222; padding: 40px 20px; border-radius: 20px;
+            text-align: center; margin: 20px 0; box-shadow: 0 0 30px rgba(255,255,255,0.1);
+        }
+        #ac-word { font-size: 2rem; color: #d63031; text-transform: uppercase; margin: 20px 0; }
+        .decision-buttons { display: flex; gap: 10px; margin-top: auto; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 10px; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
+        .fail { background: #e17055; }
+        .success { background: #00b894; }
+
+        /* WIN SCREEN */
+        .confetti { font-size: 4rem; text-align: center; margin-bottom: 20px; animation: spin 2s infinite linear; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .winner-text { color: gold; font-size: 2.5rem; text-align: center; text-shadow: 0 0 20px orange; }
+
+    </style>
 </head>
 <body>
 
-    <div class="app-container">
+<div class="app-container">
+    
+    <div id="setup-screen" class="screen active">
+        <div class="logo-area">
+            <h1>ACTIVITY <span class="accent">PARTY</span></h1>
+            <p style="color: #666;">Fără reclame. Fără cont.</p>
+        </div>
         
-        <div id="setup-screen" class="screen active">
-            <div class="logo-area">
-                <h1>ACTIVITY <span class="accent">PARTY</span></h1>
-                <p>Editia Digitală Premium</p>
-            </div>
-            
-            <div class="setup-box">
-                <h3>1. Configurare Joc</h3>
-                <label>Puncte pentru victorie:</label>
-                <input type="number" id="win-score-input" value="30" min="10" max="100">
+        <div class="setup-box">
+            <label style="color:#aaa; font-size:0.9rem;">Puncte necesare victoriei:</label>
+            <input type="number" id="win-score-input" value="20" min="5" max="50" style="margin-bottom: 20px;">
 
-                <h3>2. Adaugă Echipe</h3>
-                <div class="input-group">
-                    <input type="text" id="team-input" placeholder="Nume Echipă (ex: Leii)">
-                    <button id="add-team-btn" class="icon-btn">➕</button>
-                </div>
-                <ul id="team-list"></ul>
+            <label style="color:#aaa; font-size:0.9rem;">Adaugă Echipe:</label>
+            <div class="input-group">
+                <input type="text" id="team-input" placeholder="Nume (ex: Tigrii)">
+                <button onclick="addTeam()" class="icon-btn">➕</button>
             </div>
-
-            <button id="start-game-btn" class="main-btn" disabled>START PARTY 🚀</button>
+            <ul id="team-list"></ul>
         </div>
 
-        <div id="game-screen" class="screen">
-            <div class="top-bar">
-                <div class="turn-info">
-                    <span class="label">Rândul echipei:</span>
-                    <h2 id="current-team-name">Echipa 1</h2>
-                </div>
-                <div class="timer-box">
-                    <span id="timer">60</span>s
-                </div>
-            </div>
-
-            <div class="board-container">
-                <div id="board"></div>
-            </div>
-
-            <div class="action-area">
-                
-                <div id="selection-phase">
-                    <p class="instruction">Alegeți o provocare:</p>
-                    <div class="cards-grid" id="cards-grid">
-                        </div>
-                </div>
-
-                <div id="active-card-phase" class="hidden">
-                    <div class="active-card">
-                        <div class="card-header">
-                            <span id="ac-icon">✏️</span>
-                            <span id="ac-type">DESEN</span>
-                            <span id="ac-points">3</span>
-                        </div>
-                        <h1 id="ac-word">CUVÂNT</h1>
-                    </div>
-                    
-                    <div class="decision-buttons">
-                        <button id="fail-btn" class="btn fail">❌ Eșec</button>
-                        <button id="success-btn" class="btn success">✅ Succes</button>
-                    </div>
-                </div>
-
-            </div>
-            
-            <div id="mini-scoreboard"></div>
-        </div>
-
-        <div id="win-screen" class="screen">
-            <div class="confetti">🎉</div>
-            <h1>AVEM UN CÂȘTIGĂTOR!</h1>
-            <h2 id="winner-name" class="winner-text">Echipa X</h2>
-            <button onclick="location.reload()" class="main-btn reload">Joacă din nou 🔁</button>
-        </div>
-
+        <button id="start-btn" onclick="startGame()" class="main-btn" disabled>START JOC 🚀</button>
     </div>
 
-    <audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-    <script src="script.js"></script>
+    <div id="game-screen" class="screen">
+        <div class="top-bar">
+            <div>
+                <span style="font-size:0.8rem; color:#aaa;">Rândul echipei:</span>
+                <h2 id="current-team-name">...</h2>
+            </div>
+            <div class="timer-box">
+                <span id="timer">60</span>
+            </div>
+        </div>
+
+        <div class="board-container">
+            <div id="board"></div>
+        </div>
+
+        <div id="selection-phase">
+            <p class="instruction">Alegeți o provocare:</p>
+            <div id="cards-grid" class="cards-grid"></div>
+        </div>
+
+        <div id="active-card-phase" class="hidden">
+            <div class="active-card">
+                <div style="font-weight:bold; color:#666;">
+                    <span id="ac-icon"></span> <span id="ac-type"></span> (+<span id="ac-points"></span>p)
+                </div>
+                <h1 id="ac-word">...</h1>
+            </div>
+            <div class="decision-buttons">
+                <button onclick="endRound(false)" class="btn fail">❌ Eșec</button>
+                <button onclick="endRound(true)" class="btn success">✅ Succes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="win-screen" class="screen">
+        <div class="confetti">🎉 🏆 🎉</div>
+        <h1 style="text-align: center;">CÂȘTIGĂTORII!</h1>
+        <h2 id="winner-name" class="winner-text">...</h2>
+        <button onclick="location.reload()" class="main-btn">Joacă din nou 🔁</button>
+    </div>
+
+</div>
+
+<audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+<script>
+    // --- DATE ---
+    const DB = {
+        DESEN: ["Umbrelă", "Pizza", "Fantoma", "Avion", "Soare", "Floare", "Câine", "Casă", "Ochelari", "Bec", "Fluture", "Tort", "Girafă", "Vulcan", "Piramidă"],
+        MIMA: ["Fotbalist", "Maimuță", "Chitarist", "Balet", "Somnuros", "Pescuit", "Dirijor", "Boxer", "Bucătar", "Pinguin", "Robot", "Zombi", "DJ", "Polițist"],
+        VORBA: ["Vacanta", "Calculator", "Scoala", "Telefon", "Internet", "Prietenie", "Libertate", "Muzică", "Weekend", "Cinema", "Facebook", "Iarnă", "Nuntă"]
+    };
+    
+    const COLORS = ['#ff595e', '#1982c4', '#8ac926', '#ffca3a', '#6a4c93'];
+    let teams = [];
+    let currentTeamIndex = 0;
+    let targetScore = 20;
+    let timerInterval;
+    let timeLeft = 60;
+    let currentPoints = 0;
+
+    // --- FUNCTII ---
+    function addTeam() {
+        const input = document.getElementById('team-input');
+        const name = input.value.trim();
+        if(!name) return;
+        
+        const color = COLORS[teams.length % COLORS.length];
+        teams.push({ name: name, score: 0, color: color });
+        
+        const li = document.createElement('li');
+        li.innerHTML = `<span style="display:flex; align-items:center"><span class="team-dot" style="background:${color}"></span>${name}</span>`;
+        document.getElementById('team-list').appendChild(li);
+        
+        input.value = '';
+        document.getElementById('start-btn').disabled = false;
+    }
+
+    function startGame() {
+        targetScore = parseInt(document.getElementById('win-score-input').value) || 20;
+        
+        // Generare tabla
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+        for(let i=0; i<=targetScore; i++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.id = 'tile-' + i;
+            tile.textContent = i;
+            if(i === targetScore) tile.classList.add('finish');
+            board.appendChild(tile);
+        }
+
+        switchScreen('game-screen');
+        updateUI();
+        generateCards();
+    }
+
+    function generateCards() {
+        const grid = document.getElementById('cards-grid');
+        grid.innerHTML = '';
+        
+        const types = [
+            { id: 'DESEN', label: 'DESEN', icon: '✏️', cls: 'card-desen', list: DB.DESEN },
+            { id: 'MIMA', label: 'MIMĂ', icon: '🙊', cls: 'card-mima', list: DB.MIMA },
+            { id: 'VORBA', label: 'VORBEȘTE', icon: '🗣️', cls: 'card-vorba', list: DB.VORBA }
+        ];
+
+        // Luăm câte 2 din fiecare
+        let options = [];
+        types.forEach(t => {
+            const words = [...t.list].sort(() => 0.5 - Math.random()).slice(0, 2);
+            words.forEach(w => {
+                options.push({ ...t, word: w, points: Math.floor(Math.random() * 3) + 3 });
+            });
+        });
+
+        // Le amestecăm
+        options.sort(() => 0.5 - Math.random());
+
+        options.forEach(opt => {
+            const btn = document.createElement('div');
+            btn.className = `selection-card ${opt.cls}`;
+            btn.innerHTML = `
+                <div class="sc-points">${opt.points}</div>
+                <div class="sc-icon">${opt.icon}</div>
+                <div class="sc-type">${opt.label}</div>
+            `;
+            btn.onclick = () => startRound(opt);
+            grid.appendChild(btn);
+        });
+        
+        document.getElementById('selection-phase').classList.remove('hidden');
+        document.getElementById('active-card-phase').classList.add('hidden');
+    }
+
+    function startRound(card) {
+        currentPoints = card.points;
+        document.getElementById('selection-phase').classList.add('hidden');
+        document.getElementById('active-card-phase').classList.remove('hidden');
+        
+        document.getElementById('ac-icon').textContent = card.icon;
+        document.getElementById('ac-type').textContent = card.label;
+        document.getElementById('ac-points').textContent = card.points;
+        document.getElementById('ac-word').textContent = card.word;
+
+        startTimer();
+    }
+
+    function startTimer() {
+        timeLeft = 60;
+        const disp = document.getElementById('timer');
+        disp.textContent = timeLeft;
+        disp.style.color = "var(--accent)";
+        
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            disp.textContent = timeLeft;
+            if(timeLeft <= 10) disp.style.color = "red";
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('alarm-sound').play();
+            }
+        }, 1000);
+    }
+
+    function endRound(success) {
+        clearInterval(timerInterval);
+        
+        if(success) {
+            teams[currentTeamIndex].score += currentPoints;
+            if(teams[currentTeamIndex].score >= targetScore) {
+                teams[currentTeamIndex].score = targetScore;
+                updateUI();
+                switchScreen('win-screen');
+                document.getElementById('winner-name').textContent = teams[currentTeamIndex].name;
+                return;
+            }
+        }
+        
+        currentTeamIndex = (currentTeamIndex + 1) % teams.length;
+        updateUI();
+        generateCards();
+    }
+
+    function updateUI() {
+        // Update nume echipa
+        const team = teams[currentTeamIndex];
+        const nameEl = document.getElementById('current-team-name');
+        nameEl.textContent = team.name;
+        nameEl.style.color = team.color;
+        
+        // Update Pioni
+        document.querySelectorAll('.pawn').forEach(p => p.remove());
+        teams.forEach((t, idx) => {
+            const tile = document.getElementById('tile-' + t.score);
+            if(tile) {
+                const pawn = document.createElement('div');
+                pawn.className = 'pawn';
+                pawn.style.background = t.color;
+                // Offset mic ca sa nu se suprapuna perfect
+                pawn.style.left = (5 + idx * 5) + 'px';
+                pawn.style.bottom = (5 + idx * 2) + 'px';
+                tile.appendChild(pawn);
+            }
+        });
+        
+        // Scroll la pion
+        const activeTile = document.getElementById('tile-' + team.score);
+        if(activeTile) activeTile.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function switchScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+</script>
+
 </body>
 </html>
