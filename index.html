@@ -377,28 +377,162 @@ input[type="text"] { text-align: left; }
 <audio id="sound-alarm" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 
 <script>
+   // --- DATABASE EXTINSĂ ---
     const DB = {
         DESEN: [
-            {w:"Umbrelă",p:3}, {w:"Pizza",p:3}, {w:"Fantoma",p:4}, {w:"Avion",p:3}, {w:"Soare",p:2}, 
-            {w:"Floare",p:2}, {w:"Câine",p:3}, {w:"Casă",p:2}, {w:"Ochelari",p:3}, {w:"Bec",p:3}, 
-            {w:"Fluture",p:4}, {w:"Tort",p:3}, {w:"Girafă",p:4}, {w:"Vulcan",p:4}, {w:"Piramidă",p:5},
-            {w:"Elicopter",p:5}, {w:"Cactus",p:4}, {w:"Păianjen",p:3}, {w:"Dinozaur",p:5}, {w:"Castel",p:4},
-            {w:"Bicicletă",p:4}, {w:"Foarfece",p:3}, {w:"Cheie",p:2}, {w:"Măr",p:2}, {w:"Barcă",p:3},
-            {w:"Șarpe",p:3}, {w:"Ciocan",p:3}, {w:"Tractor",p:5}, {w:"Laptop",p:4}, {w:"Telefon",p:3}
+            // Ușoare (2p)
+            {w:"Soare",p:2}, {w:"Floare",p:2}, {w:"Casă",p:2}, {w:"Măr",p:2}, {w:"Cheie",p:2},
+            {w:"Inimă",p:2}, {w:"Stea",p:2}, {w:"Lună",p:2}, {w:"Copac",p:2}, {w:"Nor",p:2},
+            {w:"Ochi",p:2}, {w:"Mână",p:2}, {w:"Picior",p:2}, {w:"Gură",p:2}, {w:"Nas",p:2},
+            {w:"Masă",p:2}, {w:"Scaun",p:2}, {w:"Pat",p:2}, {w:"Ușă",p:2}, {w:"Geam",p:2},
+            {w:"Carte",p:2}, {w:"Pix",p:2}, {w:"Cană",p:2}, {w:"Lingură",p:2}, {w:"Furculiță",p:2},
+            {w:"Cuțit",p:2}, {w:"Farfurie",p:2}, {w:"Pahar",p:2}, {w:"Sticlă",p:2}, {w:"Cutie",p:2},
+            {w:"Pâine",p:2}, {w:"Apă",p:2}, {w:"Foc",p:2}, {w:"Iarbă",p:2}, {w:"Piatră",p:2},
+            {w:"Drum",p:2}, {w:"Pod",p:2}, {w:"Gard",p:2}, {w:"Scară",p:2}, {w:"Acoperiș",p:2},
+            {w:"Coș",p:2}, {w:"Balon",p:2}, {w:"Mingie",p:2}, {w:"Pălărie",p:2}, {w:"Pantof",p:2},
+            {w:"Ciorap",p:2}, {w:"Tricou",p:2}, {w:"Pantaloni",p:2}, {w:"Rochie",p:2}, {w:"Fustă",p:2},
+            
+            // Medii (3p)
+            {w:"Umbrelă",p:3}, {w:"Pizza",p:3}, {w:"Avion",p:3}, {w:"Câine",p:3}, {w:"Ochelari",p:3},
+            {w:"Bec",p:3}, {w:"Tort",p:3}, {w:"Păianjen",p:3}, {w:"Foarfece",p:3}, {w:"Barcă",p:3},
+            {w:"Șarpe",p:3}, {w:"Ciocan",p:3}, {w:"Telefon",p:3}, {w:"Iepure",p:3}, {w:"Ancoră",p:3},
+            {w:"Topor",p:3}, {w:"Ceas",p:3}, {w:"Inel",p:3}, {w:"Colier",p:3}, {w:"Brățară",p:3},
+            {w:"Cravată",p:3}, {w:"Papion",p:3}, {w:"Mănuși",p:3}, {w:"Fular",p:3}, {w:"Căciulă",p:3},
+            {w:"Gheată",p:3}, {w:"Sandale",p:3}, {w:"Cizme",p:3}, {w:"Umbră",p:3}, {w:"Lumină",p:3},
+            {w:"Fulger",p:3}, {w:"Ploaie",p:3}, {w:"Zăpadă",p:3}, {w:"Gheață",p:3}, {w:"Vânt",p:3},
+            {w:"Curcubeu",p:3}, {w:"Munte",p:3}, {w:"Deal",p:3}, {w:"Vale",p:3}, {w:"Râu",p:3},
+            {w:"Lac",p:3}, {w:"Mare",p:3}, {w:"Ocean",p:3}, {w:"Plajă",p:3}, {w:"Insulă",p:3},
+            {w:"Pădure",p:3}, {w:"Junglă",p:3}, {w:"Deșert",p:3}, {w:"Vulcan",p:3}, {w:"Peșteră",p:3},
+            {w:"Castel",p:3}, {w:"Palat",p:3}, {w:"Bloc",p:3}, {w:"Cort",p:3}, {w:"Iglu",p:3},
+            {w:"Far",p:3}, {w:"Moară",p:3}, {w:"Fântână",p:3}, {w:"Statuie",p:3}, {w:"Monument",p:3},
+            {w:"Biserică",p:3}, {w:"Spital",p:3}, {w:"Școală",p:3}, {w:"Bancă",p:3}, {w:"Magazin",p:3},
+            {w:"Restaurant",p:3}, {w:"Cinema",p:3}, {w:"Teatru",p:3}, {w:"Muzeu",p:3}, {w:"Bibliotecă",p:3},
+            {w:"Parc",p:3}, {w:"Grădină",p:3}, {w:"Fermă",p:3}, {w:"Fabrică",p:3}, {w:"Birou",p:3},
+            
+            // Grele (4p)
+            {w:"Fantoma",p:4}, {w:"Fluture",p:4}, {w:"Girafă",p:4}, {w:"Vulcan",p:4}, {w:"Cactus",p:4},
+            {w:"Castel",p:4}, {w:"Bicicletă",p:4}, {w:"Laptop",p:4}, {w:"Semafor",p:4}, {w:"Pod",p:4},
+            {w:"Vampir",p:4}, {w:"Mumie",p:4}, {w:"Telescop",p:4}, {w:"Microscop",p:4}, {w:"Busolă",p:4},
+            {w:"Hartă",p:4}, {w:"Glob",p:4}, {w:"Rachetă",p:4}, {w:"Satellit",p:4}, {w:"Robot",p:4},
+            {w:"Extraterestru",p:4}, {w:"OZN",p:4}, {w:"Astronaut",p:4}, {w:"Scafandru",p:4}, {w:"Submarin",p:4},
+            {w:"Tanc",p:4}, {w:"Avion",p:4}, {w:"Elicopter",p:4}, {w:"Dirijabil",p:4}, {w:"Balon",p:4},
+            {w:"Tren",p:4}, {w:"Metrou",p:4}, {w:"Tramvai",p:4}, {w:"Autobuz",p:4}, {w:"Camion",p:4},
+            {w:"Tractor",p:4}, {w:"Motocicletă",p:4}, {w:"Scuter",p:4}, {w:"Skateboard",p:4}, {w:"Role",p:4},
+            {w:"Schiuri",p:4}, {w:"Sanie",p:4}, {w:"Patine",p:4}, {w:"Snowboard",p:4}, {w:"Surf",p:4},
+            {w:"Canoe",p:4}, {w:"Iaht",p:4}, {w:"Vapor",p:4}, {w:"Barcă",p:4}, {w:"Plută",p:4},
+            
+            // Foarte Grele / Abstracte vizual (5p)
+            {w:"Piramidă",p:5}, {w:"Elicopter",p:5}, {w:"Dinozaur",p:5}, {w:"Tractor",p:5}, {w:"Clovn",p:5},
+            {w:"Scarabeu",p:5}, {w:"Sirena",p:5}, {w:"Centaur",p:5}, {w:"Unicorn",p:5}, {w:"Dragon",p:5},
+            {w:"Phoenix",p:5}, {w:"Grifon",p:5}, {w:"Sfinx",p:5}, {w:"Ciclop",p:5}, {w:"Meduză",p:5},
+            {w:"Minotaur",p:5}, {w:"Varcolac",p:5}, {w:"Zombie",p:5}, {w:"Schelet",p:5}, {w:"Craniu",p:5},
+            {w:"Amprentă",p:5}, {w:"ADN",p:5}, {w:"Atom",p:5}, {w:"Moleculă",p:5}, {w:"Bacterie",p:5},
+            {w:"Virus",p:5}, {w:"Celulă",p:5}, {w:"Creier",p:5}, {w:"Inimă",p:5}, {w:"Plămâni",p:5},
+            {w:"Stomac",p:5}, {w:"Ficat",p:5}, {w:"Rinichi",p:5}, {w:"Intestine",p:5}, {w:"Oase",p:5},
+            {w:"Mușchi",p:5}, {w:"Piele",p:5}, {w:"Păr",p:5}, {w:"Unghii",p:5}, {w:"Dinți",p:5},
+            {w:"Limba",p:5}, {w:"Ureche",p:5}, {w:"Gene",p:5}, {w:"Sprâncene",p:5}, {w:"Barba",p:5},
+            {w:"Mustața",p:5}, {w:"Aluniță",p:5}, {w:"Riduri",p:5}, {w:"Pistrui",p:5}, {w:"Cicatrice",p:5},
+            {w:"Tatuaj",p:5}, {w:"Piercing",p:5}, {w:"Machiaj",p:5}, {w:"Parfum",p:5}, {w:"Săpun",p:5}
         ],
+
         MIMA: [
-            {w:"Fotbalist",p:3}, {w:"Maimuță",p:3}, {w:"Chitarist",p:3}, {w:"Balet",p:4}, {w:"Somnuros",p:2}, 
-            {w:"Pescuit",p:3}, {w:"Dirijor",p:4}, {w:"Boxer",p:3}, {w:"Bucătar",p:3}, {w:"Pinguin",p:4}, 
-            {w:"Robot",p:3}, {w:"Zombi",p:3}, {w:"DJ",p:4}, {w:"Polițist",p:3}, {w:"Doctor",p:3},
-            {w:"Frizer",p:3}, {w:"Scafandru",p:5}, {w:"Pompier",p:4}, {w:"Vânător",p:4}, {w:"Pictor",p:3},
-            {w:"Kangur",p:4}, {w:"Broască",p:3}, {w:"Găină",p:3}, {w:"Elefant",p:4}, {w:"Șofer",p:2}
+            // Acțiuni simple (2p)
+            {w:"Somnuros",p:2}, {w:"Supărat",p:2}, {w:"Râs",p:2}, {w:"Plâns",p:2}, {w:"Strănut",p:2},
+            {w:"Șofer",p:2}, {w:"A mânca",p:2}, {w:"A bea",p:2}, {w:"A dormi",p:2}, {w:"A alerga",p:2},
+            {w:"A merge",p:2}, {w:"A sări",p:2}, {w:"A înota",p:2}, {w:"A zbura",p:2}, {w:"A cădea",p:2},
+            {w:"A se ridica",p:2}, {w:"A se așeza",p:2}, {w:"A se culca",p:2}, {w:"A se trezi",p:2}, {w:"A se spăla",p:2},
+            {w:"A se îmbrăca",p:2}, {w:"A se dezbrăca",p:2}, {w:"A se încălța",p:2}, {w:"A se descălța",p:2}, {w:"A se pieptăna",p:2},
+            {w:"A se bărbieri",p:2}, {w:"A se machia",p:2}, {w:"A se da cu parfum",p:2}, {w:"A se uita la TV",p:2}, {w:"A asculta muzică",p:2},
+            {w:"A citi",p:2}, {w:"A scrie",p:2}, {w:"A desena",p:2}, {w:"A picta",p:2}, {w:"A cânta",p:2},
+            {w:"A dansa",p:2}, {w:"A juca fotbal",p:2}, {w:"A juca baschet",p:2}, {w:"A juca tenis",p:2}, {w:"A juca volei",p:2},
+            {w:"A juca handbal",p:2}, {w:"A juca rugby",p:2}, {w:"A juca golf",p:2}, {w:"A juca biliard",p:2}, {w:"A juca bowling",p:2},
+            {w:"A juca șah",p:2}, {w:"A juca table",p:2}, {w:"A juca cărți",p:2}, {w:"A juca remi",p:2}, {w:"A juca mima",p:2},
+            
+            // Profesii & Animale (3p)
+            {w:"Fotbalist",p:3}, {w:"Maimuță",p:3}, {w:"Chitarist",p:3}, {w:"Pescuit",p:3}, {w:"Boxer",p:3},
+            {w:"Bucătar",p:3}, {w:"Robot",p:3}, {w:"Zombi",p:3}, {w:"Polițist",p:3}, {w:"Doctor",p:3},
+            {w:"Frizer",p:3}, {w:"Pictor",p:3}, {w:"Broască",p:3}, {w:"Găină",p:3}, {w:"Tenismen",p:3},
+            {w:"Îndrăgostit",p:3}, {w:"Fotograf",p:3}, {w:"Model",p:3}, {w:"Rege",p:3}, {w:"Cântăreț",p:3},
+            {w:"Fantomă",p:3}, {w:"Pisică",p:3}, {w:"Câine",p:3}, {w:"Cal",p:3}, {w:"Vacă",p:3},
+            {w:"Porc",p:3}, {w:"Oaie",p:3}, {w:"Capră",p:3}, {w:"Măgar",p:3}, {w:"Iepure",p:3},
+            {w:"Șoarece",p:3}, {w:"Șobolan",p:3}, {w:"Hamster",p:3}, {w:"Cobai",p:3}, {w:"Veveriță",p:3},
+            {w:"Castor",p:3}, {w:"Urs",p:3}, {w:"Lup",p:3}, {w:"Vulpe",p:3}, {w:"Leu",p:3},
+            {w:"Tigru",p:3}, {w:"Leopard",p:3}, {w:"Ghepard",p:3}, {w:"Elefant",p:3}, {w:"Rinocer",p:3},
+            {w:"Hipopotam",p:3}, {w:"Cămilă",p:3}, {w:"Lamă",p:3}, {w:"Girafă",p:3}, {w:"Zebre",p:3},
+            
+            // Profesii Complexe & Acțiuni (4p)
+            {w:"Balet",p:4}, {w:"Dirijor",p:4}, {w:"Pinguin",p:4}, {w:"DJ",p:4}, {w:"Pompier",p:4},
+            {w:"Vânător",p:4}, {w:"Kangur",p:4}, {w:"Elefant",p:4}, {w:"Pilot",p:4}, {w:"Schior",p:4},
+            {w:"Pianist",p:4}, {w:"Violonist",p:4}, {w:"Balerină",p:4}, {w:"Cowboy",p:4}, {w:"Astronaut",p:4},
+            {w:"Mecanic",p:4}, {w:"Instalator",p:4}, {w:"Electrician",p:4}, {w:"Zidar",p:4}, {w:"Zugrav",p:4},
+            {w:"Tâmplar",p:4}, {w:"Fierar",p:4}, {w:"Croitor",p:4}, {w:"Cizmar",p:4}, {w:"Ceasornicar",p:4},
+            {w:"Bijutier",p:4}, {w:"Olar",p:4}, {w:"Sticlar",p:4}, {w:"Brutar",p:4}, {w:"Patiser",p:4},
+            {w:"Cofetar",p:4}, {w:"Măcelar",p:4}, {w:"Pescar",p:4}, {w:"Agricultor",p:4}, {w:"Grădinar",p:4},
+            {w:"Pădurar",p:4}, {w:"Miner",p:4}, {w:"Sondor",p:4}, {w:"Marinar",p:4}, {w:"Căpitan",p:4},
+            {w:"Stewardesă",p:4}, {w:"Controlor",p:4}, {w:"Vameș",p:4}, {w:"Judecător",p:4}, {w:"Avocat",p:4},
+            {w:"Procuror",p:4}, {w:"Notar",p:4}, {w:"Politician",p:4}, {w:"Primar",p:4}, {w:"Președinte",p:4},
+            
+            // Foarte Grele (5p)
+            {w:"Scafandru",p:5}, {w:"Magician",p:5}, {w:"Ninja",p:5}, {w:"Samurai",p:5}, {w:"Sumo",p:5},
+            {w:"Karate",p:5}, {w:"Judo",p:5}, {w:"Box",p:5}, {w:"Lupte",p:5}, {w:"Scrimă",p:5},
+            {w:"Tir cu arcul",p:5}, {w:"Tir cu pușca",p:5}, {w:"Haltere",p:5}, {w:"Gimnastică",p:5}, {w:"Atletism",p:5},
+            {w:"Ciclism",p:5}, {w:"Motociclism",p:5}, {w:"Automobilism",p:5}, {w:"Kiting",p:5}, {w:"Parapantă",p:5},
+            {w:"Parașutism",p:5}, {w:"Bungee jumping",p:5}, {w:"Rafting",p:5}, {w:"Escaladă",p:5}, {w:"Alpinism",p:5},
+            {w:"Speologie",p:5}, {w:"Scufundări",p:5}, {w:"Snorkeling",p:5}, {w:"Surfing",p:5}, {w:"Windsurfing",p:5},
+            {w:"Wakeboarding",p:5}, {w:"Schi nautic",p:5}, {w:"Polo",p:5}, {w:"Hochei",p:5}, {w:"Patinaj",p:5},
+            {w:"Curling",p:5}, {w:"Bob",p:5}, {w:"Sanie",p:5}, {w:"Skeleton",p:5}, {w:"Biatlon",p:5},
+            {w:"Triatlon",p:5}, {w:"Pentatlon",p:5}, {w:"Decatlon",p:5}, {w:"Maraton",p:5}, {w:"Cros",p:5},
+            {w:"Ștafetă",p:5}, {w:"Garduri",p:5}, {w:"Săritura în lungime",p:5}, {w:"Săritura în înălțime",p:5}, {w:"Săritura cu prăjina",p:5}
         ],
+
         VORBA: [
-            {w:"Vacanta",p:3}, {w:"Calculator",p:3}, {w:"Scoala",p:2}, {w:"Telefon",p:2}, {w:"Internet",p:3}, 
-            {w:"Prietenie",p:4}, {w:"Libertate",p:5}, {w:"Muzică",p:3}, {w:"Weekend",p:2}, {w:"Cinema",p:3}, 
-            {w:"Facebook",p:3}, {w:"Iarnă",p:2}, {w:"Nuntă",p:3}, {w:"Zi de naștere",p:3}, {w:"Cadou",p:2},
-            {w:"Examen",p:3}, {w:"Bani",p:2}, {w:"Dragoste",p:4}, {w:"Politică",p:4}, {w:"Religie",p:4},
-            {w:"Spital",p:3}, {w:"Restaurant",p:3}, {w:"Hotel",p:3}, {w:"Aeroport",p:3}, {w:"Gara",p:3}
+            // Concepte simple (2p)
+            {w:"Scoala",p:2}, {w:"Telefon",p:2}, {w:"Weekend",p:2}, {w:"Iarnă",p:2}, {w:"Cadou",p:2},
+            {w:"Bani",p:2}, {w:"Autobuz",p:2}, {w:"Sport",p:2}, {w:"Fotbal",p:2}, {w:"Mama",p:2},
+            {w:"Tata",p:2}, {w:"Frate",p:2}, {w:"Sora",p:2}, {w:"Bunic",p:2}, {w:"Bunică",p:2},
+            {w:"Unchi",p:2}, {w:"Mătușă",p:2}, {w:"Văr",p:2}, {w:"Verișoară",p:2}, {w:"Nepot",p:2},
+            {w:"Nepoată",p:2}, {w:"Soț",p:2}, {w:"Soție",p:2}, {w:"Iubit",p:2}, {w:"Iubită",p:2},
+            {w:"Prieten",p:2}, {w:"Prietene",p:2}, {w:"Vecin",p:2}, {w:"Coleg",p:2}, {w:"Șef",p:2},
+            {w:"Angajat",p:2}, {w:"Client",p:2}, {w:"Vânzător",p:2}, {w:"Cumpărător",p:2}, {w:"Oaspete",p:2},
+            {w:"Gazdă",p:2}, {w:"Turist",p:2}, {w:"Ghid",p:2}, {w:"Șofer",p:2}, {w:"Pasager",p:2},
+            {w:"Pieton",p:2}, {w:"Biciclist",p:2}, {w:"Motociclist",p:2}, {w:"Șofer",p:2}, {w:"Pilot",p:2},
+            {w:"Copil",p:2}, {w:"Bebeluș",p:2}, {w:"Adolescent",p:2}, {w:"Adult",p:2}, {w:"Bătrân",p:2},
+            
+            // Concepte medii (3p)
+            {w:"Vacanta",p:3}, {w:"Calculator",p:3}, {w:"Internet",p:3}, {w:"Muzică",p:3}, {w:"Cinema",p:3},
+            {w:"Facebook",p:3}, {w:"Nuntă",p:3}, {w:"Zi de naștere",p:3}, {w:"Examen",p:3}, {w:"Spital",p:3},
+            {w:"Restaurant",p:3}, {w:"Hotel",p:3}, {w:"Aeroport",p:3}, {w:"Gara",p:3}, {w:"Metrou",p:3},
+            {w:"România",p:3}, {w:"Tenis",p:3}, {w:"Baschet",p:3}, {w:"Înot",p:3}, {w:"Cafea",p:3},
+            {w:"Ceai",p:3}, {w:"Suc",p:3}, {w:"Bere",p:3}, {w:"Vin",p:3}, {w:"Șampanie",p:3},
+            {w:"Whisky",p:3}, {w:"Vodcă",p:3}, {w:"Coniac",p:3}, {w:"Lichior",p:3}, {w:"Cocktail",p:3},
+            {w:"Limonadă",p:3}, {w:"Ciocolată",p:3}, {w:"Înghețată",p:3}, {w:"Prăjitură",p:3}, {w:"Plăcintă",p:3},
+            {w:"Clătite",p:3}, {w:"Gogoși",p:3}, {w:"Brioșe",p:3}, {w:"Fursecuri",p:3}, {w:"Bomboane",p:3},
+            {w:"Acadele",p:3}, {w:"Gumă",p:3}, {w:"Jeleuri",p:3}, {w:"Napolitane",p:3}, {w:"Biscuiți",p:3},
+            {w:"Covrigi",p:3}, {w:"Pufuleți",p:3}, {w:"Floricele",p:3}, {w:"Semințe",p:3}, {w:"Alune",p:3},
+            
+            // Concepte avansate / abstracte (4p)
+            {w:"Prietenie",p:4}, {w:"Dragoste",p:4}, {w:"Politică",p:4}, {w:"Religie",p:4}, {w:"Capitală",p:4},
+            {w:"Europa",p:4}, {w:"Planeta",p:4}, {w:"Extraterestru",p:4}, {w:"Istorie",p:4}, {w:"Matematică",p:4},
+            {w:"Biologie",p:4}, {w:"Geografie",p:4}, {w:"Literatură",p:4}, {w:"Gramatică",p:4}, {w:"Chimie",p:4},
+            {w:"Fizică",p:4}, {w:"Informatică",p:4}, {w:"Economie",p:4}, {w:"Psihologie",p:4}, {w:"Filozofie",p:4},
+            {w:"Sociologie",p:4}, {w:"Drept",p:4}, {w:"Medicină",p:4}, {w:"Arhitectură",p:4}, {w:"Inginerie",p:4},
+            {w:"Agricultură",p:4}, {w:"Industrie",p:4}, {w:"Comerț",p:4}, {w:"Turism",p:4}, {w:"Transport",p:4},
+            {w:"Comunicații",p:4}, {w:"Media",p:4}, {w:"Presă",p:4}, {w:"Televiziune",p:4}, {w:"Radio",p:4},
+            {w:"Internet",p:4}, {w:"Telefonie",p:4}, {w:"Poștă",p:4}, {w:"Curierat",p:4}, {w:"Publicitate",p:4},
+            {w:"Marketing",p:4}, {w:"Management",p:4}, {w:"Finanțe",p:4}, {w:"Contabilitate",p:4}, {w:"Audit",p:4},
+            {w:"Resurse umane",p:4}, {w:"Logistică",p:4}, {w:"Achiziții",p:4}, {w:"Vânzări",p:4}, {w:"Relații publice",p:4},
+            
+            // Concepte filozofice / științifice / rare (5p)
+            {w:"Libertate",p:5}, {w:"Univers",p:5}, {w:"Viitor",p:5}, {w:"Trecut",p:5}, {w:"Fizică cuantică",p:5},
+            {w:"Chimie organică",p:5}, {w:"Democrație",p:5}, {w:"Comunism",p:5}, {w:"Capitalism",p:5}, {w:"Socialism",p:5},
+            {w:"Monarhie",p:5}, {w:"Republică",p:5}, {w:"Dictatură",p:5}, {w:"Anarhie",p:5}, {w:"Revoluție",p:5},
+            {w:"Război",p:5}, {w:"Pace",p:5}, {w:"Armistițiu",p:5}, {w:"Tratat",p:5}, {w:"Alianță",p:5},
+            {w:"Uniune",p:5}, {w:"Organizație",p:5}, {w:"Instituție",p:5}, {w:"Administrație",p:5}, {w:"Guvern",p:5},
+            {w:"Parlament",p:5}, {w:"Senat",p:5}, {w:"Deputat",p:5}, {w:"Senator",p:5}, {w:"Ministru",p:5},
+            {w:"Premier",p:5}, {w:"Președinte",p:5}, {w:"Ambasador",p:5}, {w:"Consul",p:5}, {w:"Diplomat",p:5},
+            {w:"Spion",p:5}, {w:"Agent",p:5}, {w:"Detectiv",p:5}, {w:"Polițist",p:5}, {w:"Jandarm",p:5},
+            {w:"Militar",p:5}, {w:"Soldat",p:5}, {w:"Ofițer",p:5}, {w:"General",p:5}, {w:"Amiral",p:5},
+            {w:"Eternitate",p:5}, {w:"Infinit",p:5}, {w:"Destin",p:5}, {w:"Noroc",p:5}, {w:"Ghinion",p:5}
         ]
     };
 
@@ -632,3 +766,4 @@ input[type="text"] { text-align: left; }
 </script>
 </body>
 </html>
+
