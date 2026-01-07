@@ -1,332 +1,354 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Activity Party Pro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Activity Party Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #121212;
+            --bg-panel: #1e1e2e;
+            --accent: #ff0055;
+            --text-main: #ffffff;
+            --success: #00b894;
+            --skip: #636e72;
+            
+            /* CULORI CATEGORII */
+            --c-desen: #ffeaa7;
+            --c-mima: #74b9ff;
+            --c-vorba: #55efc4;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
-<style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Fundal subtil pentru laptop */
+            background-image: radial-gradient(circle at 50% 50%, #252535 0%, #121212 100%);
+        }
 
-/* ====== RESET ====== */
-*{box-sizing:border-box;margin:0;padding:0}
+        /* --- CONTAINER PRINCIPAL (Phone vs Laptop) --- */
+        .app-container {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-panel);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
 
-/* ====== COLORS ====== */
-:root {
---bg-dark:#121212;
---bg-panel:#1e1e2e;
---accent:#ff0055;
---text-main:#ffffff;
---success:#00b894;
---skip:#636e72;
---c-desen:#ffeaa7;
---c-mima:#74b9ff;
---c-vorba:#55efc4;
-}
+        /* Stiluri specifice pentru TABLETĂ și LAPTOP/DESKTOP */
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 500px; /* Lățime fixă, stil "aplicație mobilă" */
+                height: 90vh; /* Nu ocupă tot ecranul pe verticală */
+                border-radius: 25px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+        }
 
-/* ====== BODY ====== */
-body{
-font-family:'Poppins',sans-serif;
-background:#0a0a1a;
-color:#fff;
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-}
+        /* --- LAYOUT MANAGERS --- */
+        .screen { 
+            display: none; 
+            width: 100%; 
+            height: 100%; 
+            padding: 20px;
+            flex-direction: column;
+            overflow-y: auto; /* Scroll doar dacă e necesar */
+        }
+        .screen.active { display: flex; animation: fadeIn 0.3s ease; }
 
-/* ====== APP ====== */
-.app-container{
-background:var(--bg-panel);
-width:100%;
-max-width:1200px;
-min-height:90vh;
-border-radius:20px;
-display:flex;
-flex-direction:column;
-overflow:hidden;
-box-shadow:0 0 40px rgba(0,0,0,.4);
-}
+        /* --- SETUP SCREEN --- */
+        .setup-wrapper {
+            width: 100%;
+            margin: auto; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .logo { 
+            font-size: 3rem; 
+            font-weight: 800; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            line-height: 1; 
+            letter-spacing: -1px;
+        }
+        .accent { color: var(--accent); }
+        
+        .setup-card { 
+            background: rgba(255,255,255,0.05); 
+            padding: 20px; 
+            border-radius: 16px; 
+            margin-bottom: 15px; 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .setup-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        
+        .checkbox-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .chk-btn {
+            background: #2a2a3a; padding: 12px; border-radius: 10px; cursor: pointer;
+            border: 2px solid transparent; flex: 1; text-align: center; font-size: 0.85rem; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .chk-btn:hover { background: #353545; }
+        .chk-btn.checked { background: var(--accent); color: white; border-color: rgba(255,255,255,0.3); }
+        .chk-btn input { display: none; }
 
-/* ====== SCREENS ====== */
-.screen{
-flex:1;
-display:none;
-}
-.screen.active{
-display:flex;
-}
+        .input-group { display: flex; gap: 10px; }
+        input[type="text"] { 
+            flex: 1; padding: 14px; border-radius: 12px; border: none; 
+            background: #2a2a3a; color: white; font-size: 1rem; 
+        }
+        .btn-add { 
+            background: var(--success); color: white; border: none; 
+            width: 50px; border-radius: 12px; font-size: 1.5rem; cursor: pointer; 
+            transition: transform 0.1s;
+        }
+        .btn-add:active { transform: scale(0.95); }
 
-/* ====== SETUP ====== */
-.setup-wrapper{
-width:100%;
-max-width:480px;
-margin:auto;
-padding:20px;
-}
-.logo{
-font-size:2.6rem;
-font-weight:800;
-text-align:center;
-margin-bottom:20px;
-}
-.accent{color:var(--accent);}
-.setup-card{
-background:rgba(255,255,255,0.05);
-padding:18px;
-border-radius:14px;
-margin-bottom:12px;
-}
-.checkbox-group{display:flex;gap:8px;margin-top:10px;}
-.chk-btn{flex:1;text-align:center;padding:10px;border-radius:10px;background:#2a2a3a;font-size:.8rem;font-weight:600;cursor:pointer}
-.chk-btn.checked{background:var(--accent);color:#fff}
-.chk-btn input{display:none}
-.btn-start{
-width:100%;padding:16px;
-background:linear-gradient(135deg,var(--accent),#ff7675);
-border-radius:12px;border:none;color:#fff;
-font-size:1.3rem;font-weight:800;cursor:pointer;
-margin-top:16px;
-}
-.btn-start:disabled{opacity:.4}
-.btn-add{
-background:var(--success);border:none;color:#fff;
-width:45px;border-radius:10px;font-size:1.6rem;
-}
-.team-list{list-style:none;margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+        .team-list { 
+            list-style: none; padding: 0; margin-top: 15px; 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
+        }
+        .team-list li { 
+            background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; 
+            font-size: 0.9rem; display: flex; align-items: center; 
+        }
 
-/* ====== GAME LAYOUT DESKTOP ====== */
-@media (min-width:900px){
+        .btn-start {
+            width: 100%; padding: 20px; 
+            background: linear-gradient(135deg, var(--accent), #ff7675);
+            border: none; border-radius: 16px; color: white; 
+            font-size: 1.2rem; font-weight: 800; letter-spacing: 1px;
+            cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
+            transition: transform 0.1s;
+        }
+        .btn-start:active { transform: scale(0.98); }
+        .btn-start:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
-#game-screen{flex-direction:row}
+        /* --- GAME SCREEN --- */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 16px; 
+            margin-bottom: 15px; flex-shrink: 0;
+        }
+        .team-info-box { display: flex; flex-direction: column; justify-content: center; }
+        .timer-circle {
+            width: 55px; height: 55px; background: var(--accent); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 800; border: 4px solid rgba(255,255,255,0.1);
+            flex-shrink: 0; box-shadow: 0 0 15px rgba(255,0,85,0.3);
+        }
 
-.sidebar{
-width:320px;
-flex-shrink:0;
-display:flex!important;
-flex-direction:column;
-background:rgba(0,0,0,.25);
-border-right:1px solid rgba(255,255,255,.1);
-padding:18px;
-overflow-y:auto;
-}
+        /* Tabla de joc - Scroll orizontal/vertical curat */
+        .board-container {
+            background: rgba(0,0,0,0.2); padding: 10px; border-radius: 16px;
+            overflow-y: auto; flex-shrink: 0; max-height: 140px;
+            border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;
+        }
+        /* Scrollbar subtil */
+        .board-container::-webkit-scrollbar { width: 4px; }
+        .board-container::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
 
-.main-game-area{
-flex:1;
-padding:25px;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-overflow-y:auto;
-}
+        #board { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+        .tile {
+            width: 32px; height: 32px; background: #2d3436; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 0.75rem; color: #666; position: relative;
+        }
+        .tile.finish { background: gold; color: black; border: 2px solid orange; font-weight: bold; }
+        .pawn {
+            width: 14px; height: 14px; border-radius: 50%; position: absolute;
+            border: 2px solid white; z-index: 5; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
 
-.mobile-top-bar,
-.board-wrapper-mobile{
-display:none!important;
-}
-}
+        /* Zona centrală de joc */
+        .main-game-area {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;
+            position: relative;
+        }
 
-/* ====== GAME LAYOUT MOBILE ====== */
-@media (max-width:899px){
+        /* Carduri Informative */
+        .info-card {
+            background: white; color: #2d3436; padding: 30px 20px; border-radius: 24px; text-align: center;
+            width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; align-items: center;
+            animation: slideUp 0.4s ease;
+        }
+        .cat-badge {
+            font-size: 1.4rem; font-weight: 900; padding: 10px 30px; border-radius: 50px;
+            margin: 15px 0; display: inline-block; text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Card Cuvânt Activ */
+        .word-card {
+            background: white; color: #2d3436; width: 100%; padding: 20px;
+            border-radius: 24px; text-align: center; position: relative;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5); 
+            display: flex; flex-direction: column; justify-content: center; flex-grow: 1;
+            max-height: 350px; /* Sa nu fie prea inalt pe laptop */
+            margin-bottom: 20px;
+        }
+        .word-text { 
+            font-size: 2.5rem; 
+            font-weight: 800; line-height: 1.1; margin: 20px 0; 
+            text-transform: uppercase; word-break: break-word; 
+        }
+        .word-meta { position: absolute; top: 20px; left: 20px; font-weight: bold; color: #b2bec3; font-size: 0.8rem; letter-spacing: 1px; }
+        .word-points { position: absolute; top: 20px; right: 20px; background: #2d3436; color: white; padding: 6px 12px; border-radius: 10px; font-weight: bold; }
 
-.app-container{
-border-radius:0;
-min-height:100vh;
-}
+        /* Controale */
+        .controls { display: grid; grid-template-columns: 1fr 1.8fr; gap: 15px; width: 100%; height: 80px; margin-top: auto; }
+        .btn { border: none; border-radius: 18px; font-weight: 800; font-size: 1.2rem; cursor: pointer; color: white; transition: filter 0.2s, transform 0.1s; }
+        .btn-skip { background: var(--skip); }
+        .btn-ok { background: var(--success); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn:active { transform: scale(0.96); }
 
-.sidebar{display:none!important;}
+        .hidden { display: none !important; }
 
-.mobile-top-bar{
-display:flex!important;
-justify-content:space-between;
-align-items:center;
-padding:10px 15px;
-background:rgba(0,0,0,.3);
-border-radius:14px;
-margin:10px;
-}
+        /* WIN SCREEN */
+        .win-content { text-align: center; max-width: 500px; margin: auto; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .winner-name { font-size: 3.5rem; color: gold; margin: 20px 0; text-shadow: 0 0 30px rgba(255,215,0,0.6); line-height: 1.2;}
 
-.main-game-area{
-padding:10px;
-flex:1;
-overflow-y:auto;
-}
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-.board-wrapper-mobile{
-display:block!important;
-margin:10px;
-}
+        /* Culori Dinamice */
+        .bg-desen { background: var(--c-desen); color: #444; }
+        .bg-mima { background: var(--c-mima); color: #fff; }
+        .bg-vorba { background: var(--c-vorba); color: #444; }
 
-.board-container{max-height:150px}
-}
+        /* --- MEDIA QUERIES PENTRU TELEFOANE MICI (iPhone SE, etc) --- */
+        @media (max-height: 700px) and (max-width: 767px) {
+            .logo { font-size: 2.2rem; margin-bottom: 15px; }
+            .setup-card { padding: 15px; margin-bottom: 10px; }
+            .word-text { font-size: 1.8rem; margin: 10px 0; }
+            .word-card { flex-grow: 0; height: auto; min-height: 180px; padding: 15px; margin-bottom: 10px; }
+            .controls { height: 60px; }
+            .board-container { max-height: 100px; padding: 5px; }
+            .tile { width: 24px; height: 24px; font-size: 0.6rem; }
+            .pawn { width: 10px; height: 10px; border-width: 1px; }
+        }
 
-/* ====== COMMON UI ====== */
-.timer-circle{
-width:52px;height:52px;
-background:var(--accent);
-border-radius:50%;
-display:flex;align-items:center;justify-content:center;
-font-weight:900;font-size:1.3rem;
-}
-.board-container{
-background:rgba(255,255,255,.05);
-padding:10px;border-radius:14px;
-border:1px solid rgba(255,255,255,.08);
-overflow-y:auto;
-}
-
-/* BOARD */
-#board{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}
-.tile{
-width:30px;height:30px;
-background:#2d3436;
-border-radius:6px;
-display:flex;align-items:center;justify-content:center;
-font-size:.75rem;color:#777;
-position:relative;
-}
-.tile.finish{background:gold;color:#000}
-.pawn{
-width:10px;height:10px;border-radius:50%;
-border:1.5px solid #fff;
-position:absolute;
-}
-
-/* MAIN CARDS */
-.info-card,.word-card{
-background:#fff;color:#2d3436;
-border-radius:16px;
-max-width:480px;
-width:100%;
-box-shadow:0 10px 20px rgba(0,0,0,.4);
-padding:20px;
-}
-.word-card{
-min-height:210px;
-display:flex;flex-direction:column;justify-content:center;
-position:relative;
-}
-.word-text{font-size:2.1rem;font-weight:900;text-align:center}
-
-/* WINNER */
-.winner-name{font-size:3rem;color:gold}
-
-/* Buttons */
-.controls{max-width:480px;width:100%;display:grid;grid-template-columns:1fr 1.5fr;gap:10px;margin-top:14px}
-.btn{border:none;border-radius:12px;font-weight:900;color:#fff;font-size:1.2rem}
-.btn-skip{background:#636e72}
-.btn-ok{background:#00b894}
-
-</style>
+    </style>
 </head>
-
 <body>
 
 <div class="app-container">
 
-<!-- ========= SETUP ========= -->
-<div id="setup-screen" class="screen active">
-<div class="setup-wrapper">
+    <div id="setup-screen" class="screen active">
+        <div class="setup-wrapper">
+            <div class="logo">ACTIVITY<br><span class="accent">PARTY</span></div>
+            
+            <div class="setup-card">
+                <div style="font-weight:bold; margin-bottom:10px; color:#ddd; font-size:0.9rem; text-transform: uppercase; letter-spacing: 1px;">⚙️ Configurare</div>
+                
+                <div class="setup-row">
+                    <span style="font-size:0.95rem;">Puncte Victorie:</span>
+                    <input type="number" id="win-score" value="30" style="width:70px; text-align:center; padding:10px; border-radius:10px; border:none; font-weight:bold; font-size:1rem;">
+                </div>
 
-<div class="logo">ACTIVITY<br><span class="accent">PARTY</span></div>
+                <div style="font-size:0.95rem; margin-top:15px; margin-bottom:8px;">Categorii active:</div>
+                <div class="checkbox-group">
+                    <label class="chk-btn checked" onclick="toggleChk(this)">
+                        <input type="checkbox" value="DESEN" checked> ✏️ DESEN
+                    </label>
+                    <label class="chk-btn checked" onclick="toggleChk(this)">
+                        <input type="checkbox" value="MIMA" checked> 🙊 MIMĂ
+                    </label>
+                    <label class="chk-btn checked" onclick="toggleChk(this)">
+                        <input type="checkbox" value="VORBA" checked> 🗣️ VORBĂ
+                    </label>
+                </div>
+            </div>
 
-<div class="setup-card">
-<p><b>Puncte victorie</b></p>
-<input id="win-score" type="number" value="30" style="padding:8px;border-radius:10px;border:none;width:80px;text-align:center">
+            <div class="setup-card">
+                <div style="font-weight:bold; margin-bottom:10px; color:#ddd; font-size:0.9rem; text-transform: uppercase; letter-spacing: 1px;">👥 Echipe</div>
+                <div class="input-group">
+                    <input type="text" id="team-input" placeholder="Nume echipă..." onkeypress="handleEnter(event)">
+                    <button class="btn-add" onclick="addTeam()">+</button>
+                </div>
+                <ul id="team-list" class="team-list"></ul>
+            </div>
 
-<p style="margin-top:10px">Categorii:</p>
-<div class="checkbox-group">
-<label class="chk-btn checked"><input type="checkbox" value="DESEN" checked>✏️ DESEN</label>
-<label class="chk-btn checked"><input type="checkbox" value="MIMA" checked>🙊 MIMĂ</label>
-<label class="chk-btn checked"><input type="checkbox" value="VORBA" checked>🗣️ VORBĂ</label>
-</div>
-</div>
+            <button id="btn-start" class="btn-start" onclick="startGame()" disabled>START JOC</button>
+        </div>
+    </div>
 
-<div class="setup-card">
-<p><b>Echipe</b></p>
-<div style="display:flex;gap:8px">
-<input id="team-input" type="text" placeholder="Nume echipă…" style="flex:1;padding:10px;border-radius:10px;border:none;background:#2a2a3a;color:#fff">
-<button class="btn-add" onclick="addTeam()">+</button>
-</div>
-<ul id="team-list" class="team-list"></ul>
-</div>
+    <div id="game-screen" class="screen">
+        
+        <div class="top-bar">
+            <div class="team-info-box">
+                <div style="font-size:0.7rem; color:#aaa; text-transform:uppercase; font-weight:600;">Rândul echipei:</div>
+                <div id="active-team-name" style="font-size:1.2rem; font-weight:800;">...</div>
+            </div>
+            <div class="timer-circle" id="timer">60</div>
+        </div>
 
-<button id="btn-start" class="btn-start" onclick="startGame()" disabled>START</button>
+        <div class="board-container">
+            <div id="board"></div>
+        </div>
+        
+        <div style="text-align:center; margin-bottom:8px;">
+            <span style="font-size:0.75rem; color:#888; letter-spacing: 0.5px;">CATEGORIE CURENTĂ: <span id="global-cat-indicator" style="color:white; font-weight:bold;">...</span></span>
+        </div>
 
-</div>
-</div>
+        <div class="main-game-area">
+            
+            <div id="phase-info" style="width:100%;">
+                <div class="info-card">
+                    <div style="color:#888; font-weight:bold; font-size:0.8rem; letter-spacing:1px;">URMEAZĂ</div>
+                    <div id="next-cat-badge" class="cat-badge bg-desen">DESEN</div>
+                    <p style="color:#555; margin:5px 0; font-size:1.1rem;">Echipa <b id="info-team-name-span">...</b></p>
+                    <p style="font-size:0.9rem; color:#999; margin-bottom:20px;">Aveți 60 secunde pentru 6 cuvinte.</p>
+                    <button class="btn-ok" style="width:100%; padding:18px; border-radius:16px;" onclick="startTimerLogic()">START RUNDĂ ⏱️</button>
+                </div>
+            </div>
 
-<!-- ========= GAME ========= -->
-<div id="game-screen" class="screen">
+            <div id="phase-play" class="hidden" style="width:100%; display:flex; flex-direction:column; flex:1;">
+                <div style="color:#aaa; margin-bottom:8px; letter-spacing:2px; text-align:center; font-size:0.8rem; font-weight:600;">
+                    CUVÂNTUL <span id="word-idx" style="color:white;">1</span> / 6
+                </div>
+                
+                <div class="word-card" id="game-card-bg">
+                    <div class="word-meta" id="card-cat-label">DESEN</div>
+                    <div class="word-points" id="card-points">3p</div>
+                    <div class="word-text" id="word-text">CUVÂNT</div>
+                </div>
 
-<div class="sidebar">
-<div style="display:flex;justify-content:space-between">
-<div>
-<small>Rândul echipei</small>
-<div class="active-team-name-display" style="font-weight:800"></div>
-</div>
-<div class="timer-circle timer-display">60</div>
-</div>
+                <div class="controls">
+                    <button class="btn btn-skip" onclick="nextWord(false)">PAS</button>
+                    <button class="btn btn-ok" onclick="nextWord(true)"><span>CORECT</span> ✅</button>
+                </div>
+            </div>
 
-<div class="board-container" style="margin-top:12px">
-<div id="board-pc"></div>
-</div>
+        </div>
+    </div>
 
-<p style="text-align:center;margin-top:10px">
-Categorie: <b class="global-cat-display"></b>
-</p>
-</div>
-
-<div class="mobile-top-bar">
-<div>
-<small>Rândul echipei</small>
-<div class="active-team-name-display" style="font-weight:800"></div>
-</div>
-<div class="timer-circle timer-display">60</div>
-</div>
-
-<div class="main-game-area">
-
-<div id="phase-info">
-<div class="info-card">
-<p>URMEAZĂ</p>
-<h2 id="next-cat-badge">DESEN</h2>
-<button class="btn-ok" onclick="startTimerLogic()" style="margin-top:10px;width:100%">START</button>
-</div>
-</div>
-
-<div id="phase-play" style="display:none">
-<div class="word-card">
-<div id="word-text">Cuvânt</div>
-<div style="position:absolute;top:12px;right:12px" id="card-points">3p</div>
-</div>
-
-<div class="controls">
-<button class="btn btn-skip" onclick="nextWord(false)">PAS</button>
-<button class="btn btn-ok" onclick="nextWord(true)">CORECT</button>
-</div>
-</div>
-
-</div>
-
-<div class="board-wrapper-mobile">
-<div class="board-container">
-<div id="board-mobile"></div>
-</div>
-</div>
-
-</div>
-
-<!-- ========= WIN ========= -->
-<div id="win-screen" class="screen">
-<div style="margin:auto;text-align:center">
-<h1>🏆 CÂȘTIGĂTORI 🏆</h1>
-<div id="winner-name" class="winner-name"></div>
-<button class="btn-start" onclick="location.reload()">RESTART</button>
-</div>
-</div>
+    <div id="win-screen" class="screen" style="justify-content: center;">
+        <div class="win-content">
+            <div style="font-size:4rem;">🏆</div>
+            <h1 style="margin:0; font-size:1.5rem; color:#aaa; letter-spacing:2px; text-transform:uppercase;">Câștigători</h1>
+            <div id="winner-name" class="winner-name">...</div>
+            <button class="btn-start" onclick="location.reload()">JOC NOU ↺</button>
+        </div>
+    </div>
 
 </div>
 
@@ -335,164 +357,262 @@ Categorie: <b class="global-cat-display"></b>
 <script>
     // --- DATABASE ---
     const DB = {
-        DESEN: [{w:"Umbrelă",p:3},{w:"Pizza",p:3},{w:"Fantoma",p:4},{w:"Avion",p:3},{w:"Soare",p:2},{w:"Floare",p:2},{w:"Câine",p:3},{w:"Casă",p:2},{w:"Ochelari",p:3},{w:"Bec",p:3},{w:"Fluture",p:4},{w:"Tort",p:3},{w:"Girafă",p:4},{w:"Vulcan",p:4},{w:"Piramidă",p:5},{w:"Elicopter",p:5},{w:"Cactus",p:4},{w:"Păianjen",p:3},{w:"Dinozaur",p:5},{w:"Castel",p:4},{w:"Bicicletă",p:4},{w:"Foarfece",p:3},{w:"Cheie",p:2},{w:"Măr",p:2},{w:"Barcă",p:3},{w:"Șarpe",p:3},{w:"Ciocan",p:3},{w:"Tractor",p:5},{w:"Laptop",p:4},{w:"Telefon",p:3},{w:"Semafor",p:4},{w:"Iepure",p:3},{w:"Pisică",p:2},{w:"Clovn",p:5},{w:"Balon",p:2},{w:"Pod",p:4},{w:"Scarabeu",p:5},{w:"Vampir",p:4},{w:"Mumie",p:4},{w:"Sirena",p:5}],
-        MIMA: [{w:"Fotbalist",p:3},{w:"Maimuță",p:3},{w:"Chitarist",p:3},{w:"Balet",p:4},{w:"Somnuros",p:2},{w:"Pescuit",p:3},{w:"Dirijor",p:4},{w:"Boxer",p:3},{w:"Bucătar",p:3},{w:"Pinguin",p:4},{w:"Robot",p:3},{w:"Zombi",p:3},{w:"DJ",p:4},{w:"Polițist",p:3},{w:"Doctor",p:3},{w:"Frizer",p:3},{w:"Scafandru",p:5},{w:"Pompier",p:4},{w:"Vânător",p:4},{w:"Pictor",p:3},{w:"Kangur",p:4},{w:"Broască",p:3},{w:"Găină",p:3},{w:"Elefant",p:4},{w:"Șofer",p:2},{w:"Pilot",p:4},{w:"Tenismen",p:3},{w:"Schior",p:4},{w:"Pianist",p:4},{w:"Violonist",p:4},{w:"Îndrăgostit",p:3},{w:"Supărat",p:2},{w:"Râs",p:2},{w:"Plâns",p:2},{w:"Strănut",p:2},{w:"Fotograf",p:3},{w:"Model",p:3},{w:"Rege",p:3},{w:"Cântăreț",p:3}],
-        VORBA: [{w:"Vacanta",p:3},{w:"Calculator",p:3},{w:"Scoala",p:2},{w:"Telefon",p:2},{w:"Internet",p:3},{w:"Prietenie",p:4},{w:"Libertate",p:5},{w:"Muzică",p:3},{w:"Weekend",p:2},{w:"Cinema",p:3},{w:"Facebook",p:3},{w:"Iarnă",p:2},{w:"Nuntă",p:3},{w:"Zi de naștere",p:3},{w:"Cadou",p:2},{w:"Examen",p:3},{w:"Bani",p:2},{w:"Dragoste",p:4},{w:"Politică",p:4},{w:"Religie",p:4},{w:"Spital",p:3},{w:"Restaurant",p:3},{w:"Hotel",p:3},{w:"Aeroport",p:3},{w:"Gara",p:3},{w:"Autobuz",p:2},{w:"Metrou",p:3},{w:"Capitală",p:4},{w:"România",p:3},{w:"Europa",p:4},{w:"Planeta",p:4},{w:"Univers",p:5},{w:"Extraterestru",p:4},{w:"Viitor",p:5},{w:"Trecut",p:5},{w:"Istorie",p:4},{w:"Matematică",p:4},{w:"Fizică",p:5},{w:"Chimie",p:5}]
+        DESEN: [
+            {w:"Umbrelă",p:3}, {w:"Pizza",p:3}, {w:"Fantoma",p:4}, {w:"Avion",p:3}, {w:"Soare",p:2}, 
+            {w:"Floare",p:2}, {w:"Câine",p:3}, {w:"Casă",p:2}, {w:"Ochelari",p:3}, {w:"Bec",p:3}, 
+            {w:"Fluture",p:4}, {w:"Tort",p:3}, {w:"Girafă",p:4}, {w:"Vulcan",p:4}, {w:"Piramidă",p:5},
+            {w:"Elicopter",p:5}, {w:"Cactus",p:4}, {w:"Păianjen",p:3}, {w:"Dinozaur",p:5}, {w:"Castel",p:4},
+            {w:"Bicicletă",p:4}, {w:"Foarfece",p:3}, {w:"Cheie",p:2}, {w:"Măr",p:2}, {w:"Barcă",p:3},
+            {w:"Șarpe",p:3}, {w:"Ciocan",p:3}, {w:"Tractor",p:5}, {w:"Laptop",p:4}, {w:"Telefon",p:3},
+            {w:"Semafor",p:4}, {w:"Iepure",p:3}, {w:"Pisică",p:2}, {w:"Clovn",p:5}, {w:"Balon",p:2},
+            {w:"Pod",p:4}, {w:"Scarabeu",p:5}, {w:"Vampir",p:4}, {w:"Mumie",p:4}, {w:"Sirena",p:5},
+            {w:"Ancoră",p:3}, {w:"Topor",p:3}, {w:"Inimă",p:2}, {w:"Stea",p:2}, {w:"Lună",p:2}
+        ],
+        MIMA: [
+            {w:"Fotbalist",p:3}, {w:"Maimuță",p:3}, {w:"Chitarist",p:3}, {w:"Balet",p:4}, {w:"Somnuros",p:2}, 
+            {w:"Pescuit",p:3}, {w:"Dirijor",p:4}, {w:"Boxer",p:3}, {w:"Bucătar",p:3}, {w:"Pinguin",p:4}, 
+            {w:"Robot",p:3}, {w:"Zombi",p:3}, {w:"DJ",p:4}, {w:"Polițist",p:3}, {w:"Doctor",p:3},
+            {w:"Frizer",p:3}, {w:"Scafandru",p:5}, {w:"Pompier",p:4}, {w:"Vânător",p:4}, {w:"Pictor",p:3},
+            {w:"Kangur",p:4}, {w:"Broască",p:3}, {w:"Găină",p:3}, {w:"Elefant",p:4}, {w:"Șofer",p:2},
+            {w:"Pilot",p:4}, {w:"Tenismen",p:3}, {w:"Schior",p:4}, {w:"Pianist",p:4}, {w:"Violonist",p:4},
+            {w:"Îndrăgostit",p:3}, {w:"Supărat",p:2}, {w:"Râs",p:2}, {w:"Plâns",p:2}, {w:"Strănut",p:2},
+            {w:"Fotograf",p:3}, {w:"Model",p:3}, {w:"Rege",p:3}, {w:"Cântăreț",p:3}, {w:"Balerină",p:4},
+            {w:"Magician",p:5}, {w:"Fantomă",p:3}, {w:"Ninja",p:5}, {w:"Samurai",p:5}, {w:"Cowboy",p:4}
+        ],
+        VORBA: [
+            {w:"Vacanta",p:3}, {w:"Calculator",p:3}, {w:"Scoala",p:2}, {w:"Telefon",p:2}, {w:"Internet",p:3}, 
+            {w:"Prietenie",p:4}, {w:"Libertate",p:5}, {w:"Muzică",p:3}, {w:"Weekend",p:2}, {w:"Cinema",p:3}, 
+            {w:"Facebook",p:3}, {w:"Iarnă",p:2}, {w:"Nuntă",p:3}, {w:"Zi de naștere",p:3}, {w:"Cadou",p:2},
+            {w:"Examen",p:3}, {w:"Bani",p:2}, {w:"Dragoste",p:4}, {w:"Politică",p:4}, {w:"Religie",p:4},
+            {w:"Spital",p:3}, {w:"Restaurant",p:3}, {w:"Hotel",p:3}, {w:"Aeroport",p:3}, {w:"Gara",p:3},
+            {w:"Autobuz",p:2}, {w:"Metrou",p:3}, {w:"Capitală",p:4}, {w:"România",p:3}, {w:"Europa",p:4},
+            {w:"Planeta",p:4}, {w:"Univers",p:5}, {w:"Extraterestru",p:4}, {w:"Viitor",p:5}, {w:"Trecut",p:5},
+            {w:"Istorie",p:4}, {w:"Matematică",p:4}, {w:"Fizică",p:5}, {w:"Chimie",p:5}, {w:"Biologie",p:4},
+            {w:"Sport",p:2}, {w:"Fotbal",p:2}, {w:"Tenis",p:3}, {w:"Baschet",p:3}, {w:"Înot",p:3}
+        ]
     };
+
     const TEAM_COLORS = ['#ff595e', '#1982c4', '#8ac926', '#ffca3a', '#9b59b6'];
     
     // --- STATE ---
     let teams = [];
     let activeCategories = [];
     let targetScore = 30;
+    
     let currentTeamIdx = 0;
     let currentGlobalCategory = null;
     let teamsPlayedThisRound = 0;
+
     let roundWords = [];
     let currentWordIdx = 0;
     let roundScore = 0;
     let timerInterval = null;
     let timeLeft = 60;
 
-    // --- UI HELPERS ---
+    // --- SETUP UI ---
     function toggleChk(el) {
         const input = el.querySelector('input');
         input.checked = !input.checked;
-        el.classList.toggle('checked', input.checked);
-    }
-    function updateDisplays(className, text) {
-        document.querySelectorAll('.' + className).forEach(el => el.textContent = text);
-    }
-    function updateColors(className, color) {
-         document.querySelectorAll('.' + className).forEach(el => el.style.color = color);
+        if(input.checked) el.classList.add('checked');
+        else el.classList.remove('checked');
     }
 
-    // --- SETUP ---
+    function handleEnter(e) {
+        if(e.key === 'Enter') addTeam();
+    }
+
     function addTeam() {
         const input = document.getElementById('team-input');
         const name = input.value.trim();
         if(!name) return;
         if(teams.length >= 5) { alert("Maxim 5 echipe!"); return; }
+
         const color = TEAM_COLORS[teams.length];
         teams.push({ name, score: 0, color });
+        
         const li = document.createElement('li');
-        li.innerHTML = `<span style="width:10px; height:10px; border-radius:50%; background:${color}; margin-right:5px;"></span> ${name}`;
+        li.innerHTML = `<span style="width:12px; height:12px; border-radius:50%; background:${color}; display:inline-block; margin-right:8px; border:2px solid white;"></span> <b>${name}</b>`;
         document.getElementById('team-list').appendChild(li);
         input.value = '';
+        input.focus();
         document.getElementById('btn-start').disabled = false;
     }
 
     function startGame() {
         targetScore = parseInt(document.getElementById('win-score').value) || 30;
-        activeCategories = Array.from(document.querySelectorAll('.checkbox-group input:checked')).map(c => c.value);
-        if(activeCategories.length === 0) { alert("Selectează o categorie!"); return; }
+        
+        const checks = document.querySelectorAll('.checkbox-group input:checked');
+        activeCategories = Array.from(checks).map(c => c.value);
+        
+        if(activeCategories.length === 0) { alert("Selectează măcar o categorie!"); return; }
 
-        // Generam ambele table (PC si Mobil)
-        ['board-pc', 'board-mobile'].forEach(id => {
-            const board = document.getElementById(id);
-            board.innerHTML = '';
-            for(let i=0; i<=targetScore; i++) {
-                const t = document.createElement('div');
-                t.className = 'tile' + (i===targetScore ? ' finish' : '');
-                t.textContent = i;
-                t.id = `${id}-tile-${i}`;
-                board.appendChild(t);
-            }
-        });
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+        for(let i=0; i<=targetScore; i++) {
+            const t = document.createElement('div');
+            t.className = 'tile';
+            if(i===targetScore) t.classList.add('finish');
+            t.textContent = i;
+            t.id = 'tile-'+i;
+            board.appendChild(t);
+        }
 
         updatePawns();
         pickGlobalCategory();
+        
         document.getElementById('setup-screen').classList.remove('active');
         document.getElementById('game-screen').classList.add('active');
+        
         prepareTurnUI();
     }
 
     // --- GAME LOGIC ---
+
     function pickGlobalCategory() {
         currentGlobalCategory = activeCategories[Math.floor(Math.random() * activeCategories.length)];
         teamsPlayedThisRound = 0;
-        updateDisplays('global-cat-display', getCatLabel(currentGlobalCategory));
+        document.getElementById('global-cat-indicator').textContent = getCatLabel(currentGlobalCategory);
     }
-    function getCatLabel(cat) { return cat === 'DESEN' ? "DESEN ✏️" : (cat === 'MIMA' ? "MIMĂ 🙊" : "VORBEȘTE 🗣️"); }
-    function getCatClass(cat) { return cat === 'DESEN' ? "bg-desen" : (cat === 'MIMA' ? "bg-mima" : "bg-vorba"); }
+
+    function getCatLabel(cat) {
+        if(cat === 'DESEN') return "DESEN ✏️";
+        if(cat === 'MIMA') return "MIMĂ 🙊";
+        if(cat === 'VORBA') return "VORBĂ 🗣️";
+        return cat;
+    }
+
+    function getCatClass(cat) {
+        if(cat === 'DESEN') return "bg-desen";
+        if(cat === 'MIMA') return "bg-mima";
+        if(cat === 'VORBA') return "bg-vorba";
+        return "";
+    }
 
     function prepareTurnUI() {
         const team = teams[currentTeamIdx];
-        updateDisplays('active-team-name-display', team.name);
-        updateColors('active-team-name-display', team.color);
+        
+        document.getElementById('active-team-name').textContent = team.name;
+        document.getElementById('active-team-name').style.color = team.color;
         
         document.getElementById('phase-info').classList.remove('hidden');
         document.getElementById('phase-play').classList.add('hidden');
+        document.getElementById('phase-play').removeAttribute('style'); // Reset inline styles
+        document.getElementById('phase-play').style.display = 'none';
+
+        const infoName = document.getElementById('info-team-name-span');
+        infoName.textContent = team.name;
+        infoName.style.color = team.color;
+        infoName.style.fontSize = "1.3rem";
 
         const badge = document.getElementById('next-cat-badge');
         badge.className = `cat-badge ${getCatClass(currentGlobalCategory)}`;
         badge.textContent = getCatLabel(currentGlobalCategory);
 
-        roundWords = DB[currentGlobalCategory].sort(() => 0.5 - Math.random()).slice(0, 6);
-        currentWordIdx = 0; roundScore = 0;
-        updateDisplays('timer-display', "60");
-        document.querySelectorAll('.timer-display').forEach(el => el.style.background = "var(--accent)");
+        const pool = DB[currentGlobalCategory].sort(() => 0.5 - Math.random());
+        roundWords = pool.slice(0, 6);
+        currentWordIdx = 0;
+        roundScore = 0;
+        
+        document.getElementById('timer').textContent = "60";
+        document.getElementById('timer').style.background = "var(--accent)";
     }
 
     function startTimerLogic() {
         document.getElementById('phase-info').classList.add('hidden');
-        document.getElementById('phase-play').classList.remove('hidden');
+        const playPhase = document.getElementById('phase-play');
+        playPhase.classList.remove('hidden');
+        playPhase.style.display = 'flex'; // Force flex for column layout
+        
         showWord();
+
         timeLeft = 60;
+        const timerEl = document.getElementById('timer');
+        
         if(timerInterval) clearInterval(timerInterval);
         timerInterval = setInterval(() => {
             timeLeft--;
-            updateDisplays('timer-display', timeLeft);
-            if(timeLeft <= 10) document.querySelectorAll('.timer-display').forEach(el => el.style.background = "#d63031");
-            if(timeLeft <= 0) endTurn();
+            timerEl.textContent = timeLeft;
+            if(timeLeft <= 10) timerEl.style.background = "#d63031";
+            
+            if(timeLeft <= 0) {
+                endTurn();
+            }
         }, 1000);
     }
 
     function showWord() {
-        if(currentWordIdx >= roundWords.length) { endTurn(); return; }
+        if(currentWordIdx >= roundWords.length) {
+            endTurn();
+            return;
+        }
         const w = roundWords[currentWordIdx];
         document.getElementById('word-idx').textContent = (currentWordIdx + 1);
         document.getElementById('word-text').textContent = w.w;
         document.getElementById('card-points').textContent = w.p + "p";
         document.getElementById('card-cat-label').textContent = currentGlobalCategory;
+        
         const cardBg = document.getElementById('game-card-bg');
-        cardBg.className = 'word-card'; // reset
-        if(currentGlobalCategory === 'DESEN') cardBg.style.borderTop = "10px solid var(--c-desen)";
-        else if(currentGlobalCategory === 'MIMA') cardBg.style.borderTop = "10px solid var(--c-mima)";
-        else cardBg.style.borderTop = "10px solid var(--c-vorba)";
+        if(currentGlobalCategory === 'DESEN') cardBg.style.borderTop = "15px solid var(--c-desen)";
+        else if(currentGlobalCategory === 'MIMA') cardBg.style.borderTop = "15px solid var(--c-mima)";
+        else cardBg.style.borderTop = "15px solid var(--c-vorba)";
     }
 
     function nextWord(isCorrect) {
-        if(isCorrect) roundScore += roundWords[currentWordIdx].p;
-        currentWordIdx++; showWord();
+        if(isCorrect) {
+            roundScore += roundWords[currentWordIdx].p;
+        }
+        currentWordIdx++;
+        showWord();
     }
 
     function endTurn() {
         clearInterval(timerInterval);
         document.getElementById('sound-alarm').play();
-        teams[currentTeamIdx].score = Math.min(teams[currentTeamIdx].score + roundScore, targetScore);
-        if(teams[currentTeamIdx].score >= targetScore) { updatePawns(); showWin(); return; }
+        
+        teams[currentTeamIdx].score += roundScore;
+        if(teams[currentTeamIdx].score >= targetScore) {
+            teams[currentTeamIdx].score = targetScore;
+            updatePawns();
+            showWin();
+            return;
+        }
+        
         updatePawns();
-        teamsPlayedThisRound++; currentTeamIdx++;
-        if(currentTeamIdx >= teams.length) currentTeamIdx = 0;
-        if(teamsPlayedThisRound >= teams.length) pickGlobalCategory();
-        setTimeout(prepareTurnUI, 1500);
+
+        teamsPlayedThisRound++; 
+        currentTeamIdx++;
+
+        if(currentTeamIdx >= teams.length) {
+            currentTeamIdx = 0;
+        }
+
+        if(teamsPlayedThisRound >= teams.length) {
+            pickGlobalCategory();
+        }
+
+        setTimeout(() => {
+            prepareTurnUI();
+        }, 1500);
     }
 
     function updatePawns() {
         document.querySelectorAll('.pawn').forEach(p => p.remove());
+        
         teams.forEach((t, i) => {
-            const pos = Math.min(t.score, targetScore);
-            ['board-pc', 'board-mobile'].forEach(boardId => {
-                 const tile = document.getElementById(`${boardId}-tile-${pos}`);
-                 if(tile) {
-                    const p = document.createElement('div');
-                    p.className = 'pawn'; p.style.background = t.color;
-                    p.style.left = (4 + i*6) + 'px'; p.style.bottom = (4 + (i%2)*6) + 'px';
-                    tile.appendChild(p);
-                    if(i === currentTeamIdx) tile.scrollIntoView({block: "center", behavior: "smooth"});
-                 }
-            });
+            let pos = t.score;
+            if(pos > targetScore) pos = targetScore;
+            const tile = document.getElementById('tile-' + pos);
+            if(tile) {
+                const p = document.createElement('div');
+                p.className = 'pawn';
+                p.style.background = t.color;
+                // Offset inteligent pentru pioni ca să nu se suprapună total
+                p.style.left = (4 + i*4) + 'px'; 
+                p.style.bottom = (4 + (i%2)*4) + 'px';
+                tile.appendChild(p);
+                
+                if(i === currentTeamIdx) tile.scrollIntoView({block: "center", behavior: "smooth"});
+            }
         });
     }
 
@@ -501,12 +621,7 @@ Categorie: <b class="global-cat-display"></b>
         document.getElementById('win-screen').classList.add('active');
         document.getElementById('winner-name').textContent = teams[currentTeamIdx].name;
     }
+
 </script>
 </body>
 </html>
-
-
-
-
-
-
