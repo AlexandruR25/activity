@@ -1,251 +1,267 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Activity Party Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-body: #121212;
-            --bg-panel: #1e1e2e;
-            --accent: #ff0055;
-            --text-main: #ffffff;
-            --success: #00b894;
-            --skip: #636e72;
-            
-            /* CULORI CATEGORII */
-            --c-desen: #ffeaa7;
-            --c-mima: #74b9ff;
-            --c-vorba: #55efc4;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+<title>Activity Party Pro</title>
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            /* Fundal subtil pentru laptop */
-            background-image: radial-gradient(circle at 50% 50%, #252535 0%, #121212 100%);
-        }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
-        /* --- CONTAINER PRINCIPAL (Phone vs Laptop) --- */
-        .app-container {
-            width: 100%;
-            height: 100%;
-            background: var(--bg-panel);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
+<style>
 
-        /* Stiluri specifice pentru TABLETĂ și LAPTOP/DESKTOP */
-        @media (min-width: 768px) {
-            .app-container {
-                max-width: 500px; /* Lățime fixă, stil "aplicație mobilă" */
-                height: 90vh; /* Nu ocupă tot ecranul pe verticală */
-                border-radius: 25px;
-                box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-                border: 1px solid rgba(255,255,255,0.1);
-            }
-        }
+/* ================== THEME ================== */
 
-        /* --- LAYOUT MANAGERS --- */
-        .screen { 
-            display: none; 
-            width: 100%; 
-            height: 100%; 
-            padding: 20px;
-            flex-direction: column;
-            overflow-y: auto; /* Scroll doar dacă e necesar */
-        }
-        .screen.active { display: flex; animation: fadeIn 0.3s ease; }
+:root{
+    --bg-dark:#0f0f16;
+    --panel:#1b1b29;
+    --accent:#ff2d75;
+    --text:#fff;
+    --success:#00c97c;
+    --skip:#636e72;
 
-        /* --- SETUP SCREEN --- */
-        .setup-wrapper {
-            width: 100%;
-            margin: auto; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .logo { 
-            font-size: 3rem; 
-            font-weight: 800; 
-            text-align: center; 
-            margin-bottom: 30px; 
-            line-height: 1; 
-            letter-spacing: -1px;
-        }
-        .accent { color: var(--accent); }
-        
-        .setup-card { 
-            background: rgba(255,255,255,0.05); 
-            padding: 20px; 
-            border-radius: 16px; 
-            margin-bottom: 15px; 
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .setup-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        
-        .checkbox-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-        .chk-btn {
-            background: #2a2a3a; padding: 12px; border-radius: 10px; cursor: pointer;
-            border: 2px solid transparent; flex: 1; text-align: center; font-size: 0.85rem; font-weight: 600;
-            transition: all 0.2s;
-        }
-        .chk-btn:hover { background: #353545; }
-        .chk-btn.checked { background: var(--accent); color: white; border-color: rgba(255,255,255,0.3); }
-        .chk-btn input { display: none; }
+    --c-desen:#ffeaa7;
+    --c-mima:#74b9ff;
+    --c-vorba:#55efc4;
+}
 
-        .input-group { display: flex; gap: 10px; }
-        input[type="text"] { 
-            flex: 1; padding: 14px; border-radius: 12px; border: none; 
-            background: #2a2a3a; color: white; font-size: 1rem; 
-        }
-        .btn-add { 
-            background: var(--success); color: white; border: none; 
-            width: 50px; border-radius: 12px; font-size: 1.5rem; cursor: pointer; 
-            transition: transform 0.1s;
-        }
-        .btn-add:active { transform: scale(0.95); }
+*{box-sizing:border-box;}
+body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    background:var(--bg-dark);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+}
 
-        .team-list { 
-            list-style: none; padding: 0; margin-top: 15px; 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
-        }
-        .team-list li { 
-            background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; 
-            font-size: 0.9rem; display: flex; align-items: center; 
-        }
+/* ================== APP CONTAINER ================== */
 
-        .btn-start {
-            width: 100%; padding: 20px; 
-            background: linear-gradient(135deg, var(--accent), #ff7675);
-            border: none; border-radius: 16px; color: white; 
-            font-size: 1.2rem; font-weight: 800; letter-spacing: 1px;
-            cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4);
-            transition: transform 0.1s;
-        }
-        .btn-start:active { transform: scale(0.98); }
-        .btn-start:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+.app{
+    width:100%;
+    max-width:780px;
+    background:var(--panel);
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 0 40px rgba(0,0,0,.6);
+    min-height:100vh;
+}
 
-        /* --- GAME SCREEN --- */
-        .top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 16px; 
-            margin-bottom: 15px; flex-shrink: 0;
-        }
-        .team-info-box { display: flex; flex-direction: column; justify-content: center; }
-        .timer-circle {
-            width: 55px; height: 55px; background: var(--accent); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; font-weight: 800; border: 4px solid rgba(255,255,255,0.1);
-            flex-shrink: 0; box-shadow: 0 0 15px rgba(255,0,85,0.3);
-        }
+/* ================== SCREENS ================== */
 
-        /* Tabla de joc - Scroll orizontal/vertical curat */
-        .board-container {
-            background: rgba(0,0,0,0.2); padding: 10px; border-radius: 16px;
-            overflow-y: auto; flex-shrink: 0; max-height: 140px;
-            border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;
-        }
-        /* Scrollbar subtil */
-        .board-container::-webkit-scrollbar { width: 4px; }
-        .board-container::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
+.screen{
+    display:none;
+    padding:15px;
+    flex:1;
+}
+.screen.active{
+    display:flex;
+    flex-direction:column;
+}
 
-        #board { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
-        .tile {
-            width: 32px; height: 32px; background: #2d3436; border-radius: 6px;
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 0.75rem; color: #666; position: relative;
-        }
-        .tile.finish { background: gold; color: black; border: 2px solid orange; font-weight: bold; }
-        .pawn {
-            width: 14px; height: 14px; border-radius: 50%; position: absolute;
-            border: 2px solid white; z-index: 5; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
+/* ================== SETUP ================== */
 
-        /* Zona centrală de joc */
-        .main-game-area {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;
-            position: relative;
-        }
+.logo{
+    text-align:center;
+    font-size:2.6rem;
+    font-weight:800;
+    margin:10px 0 25px;
+}
+.logo span{color:var(--accent);}
 
-        /* Carduri Informative */
-        .info-card {
-            background: white; color: #2d3436; padding: 30px 20px; border-radius: 24px; text-align: center;
-            width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; align-items: center;
-            animation: slideUp 0.4s ease;
-        }
-        .cat-badge {
-            font-size: 1.4rem; font-weight: 900; padding: 10px 30px; border-radius: 50px;
-            margin: 15px 0; display: inline-block; text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        /* Card Cuvânt Activ */
-        .word-card {
-            background: white; color: #2d3436; width: 100%; padding: 20px;
-            border-radius: 24px; text-align: center; position: relative;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.5); 
-            display: flex; flex-direction: column; justify-content: center; flex-grow: 1;
-            max-height: 350px; /* Sa nu fie prea inalt pe laptop */
-            margin-bottom: 20px;
-        }
-        .word-text { 
-            font-size: 2.5rem; 
-            font-weight: 800; line-height: 1.1; margin: 20px 0; 
-            text-transform: uppercase; word-break: break-word; 
-        }
-        .word-meta { position: absolute; top: 20px; left: 20px; font-weight: bold; color: #b2bec3; font-size: 0.8rem; letter-spacing: 1px; }
-        .word-points { position: absolute; top: 20px; right: 20px; background: #2d3436; color: white; padding: 6px 12px; border-radius: 10px; font-weight: bold; }
+.setup-card{
+    background:rgba(255,255,255,.05);
+    border-radius:14px;
+    padding:15px;
+    margin-bottom:15px;
+}
 
-        /* Controale */
-        .controls { display: grid; grid-template-columns: 1fr 1.8fr; gap: 15px; width: 100%; height: 80px; margin-top: auto; }
-        .btn { border: none; border-radius: 18px; font-weight: 800; font-size: 1.2rem; cursor: pointer; color: white; transition: filter 0.2s, transform 0.1s; }
-        .btn-skip { background: var(--skip); }
-        .btn-ok { background: var(--success); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn:active { transform: scale(0.96); }
+.checkbox-group{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.chk-btn{
+    flex:1;
+    text-align:center;
+    padding:9px;
+    border-radius:10px;
+    background:#26263a;
+    font-size:.9rem;
+    cursor:pointer;
+}
+.chk-btn.checked{
+    background:var(--accent);
+}
+.chk-btn input{display:none;}
 
-        .hidden { display: none !important; }
+input[type="text"],input[type="number"]{
+    width:100%;
+    border:none;
+    border-radius:10px;
+    padding:10px;
+    background:#26263a;
+    color:white;
+}
 
-        /* WIN SCREEN */
-        .win-content { text-align: center; max-width: 500px; margin: auto; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .winner-name { font-size: 3.5rem; color: gold; margin: 20px 0; text-shadow: 0 0 30px rgba(255,215,0,0.6); line-height: 1.2;}
+.btn-add{
+    background:var(--success);
+    border:none;
+    border-radius:10px;
+    font-size:1.4rem;
+    width:50px;
+    color:white;
+}
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.team-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:6px;
+    padding:0;
+    list-style:none;
+}
 
-        /* Culori Dinamice */
-        .bg-desen { background: var(--c-desen); color: #444; }
-        .bg-mima { background: var(--c-mima); color: #fff; }
-        .bg-vorba { background: var(--c-vorba); color: #444; }
+.btn-start{
+    margin-top:auto;
+    background:linear-gradient(135deg,var(--accent),#ff7b94);
+    color:white;
+    border:none;
+    padding:16px;
+    border-radius:12px;
+    font-weight:900;
+    font-size:1.1rem;
+}
+.btn-start:disabled{opacity:.5}
 
-        /* --- MEDIA QUERIES PENTRU TELEFOANE MICI (iPhone SE, etc) --- */
-        @media (max-height: 700px) and (max-width: 767px) {
-            .logo { font-size: 2.2rem; margin-bottom: 15px; }
-            .setup-card { padding: 15px; margin-bottom: 10px; }
-            .word-text { font-size: 1.8rem; margin: 10px 0; }
-            .word-card { flex-grow: 0; height: auto; min-height: 180px; padding: 15px; margin-bottom: 10px; }
-            .controls { height: 60px; }
-            .board-container { max-height: 100px; padding: 5px; }
-            .tile { width: 24px; height: 24px; font-size: 0.6rem; }
-            .pawn { width: 10px; height: 10px; border-width: 1px; }
-        }
+/* ================== GAME ================== */
 
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,.3);
+    border-radius:12px;
+    padding:10px 16px;
+}
+
+.timer-circle{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    background:var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:1.3rem;
+}
+
+.board-container{
+    margin:10px 0;
+    padding:10px;
+    border-radius:12px;
+    background:rgba(255,255,255,.04);
+    max-height:160px;
+    overflow-y:auto;
+}
+#board{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    justify-content:center;
+}
+.tile{
+    width:32px;
+    height:32px;
+    border-radius:6px;
+    background:#303046;
+    color:#888;
+    font-size:.8rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+.tile.finish{
+    background:gold;
+    color:black;
+}
+
+.pawn{
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    border:2px solid white;
+    position:absolute;
+}
+
+/* ================== CARDS ================== */
+
+.main-area{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.info-card,.word-card{
+    background:white;
+    color:#1f1f2e;
+    border-radius:18px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+
+.cat-badge{
+    padding:8px 25px;
+    font-weight:900;
+    border-radius:40px;
+    margin:12px auto;
+}
+
+.word-text{
+    font-weight:900;
+    font-size:2rem;
+    margin:25px 0;
+}
+
+/* ================== CONTROLS ================== */
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:auto;
+}
+.btn{
+    border:none;
+    border-radius:12px;
+    padding:14px;
+    font-size:1.1rem;
+    font-weight:900;
+    color:white;
+}
+.btn-skip{background:var(--skip);}
+.btn-ok{background:var(--success);}
+
+/* ================== WIN ================== */
+
+.winner{
+    text-align:center;
+    margin:auto;
+    font-size:2.6rem;
+    color:gold;
+}
+
+/* ================== MOBILE TWEAKS ================== */
+
+@media (max-width:600px){
+    .logo{font-size:2.2rem;}
+    .word-text{font-size:1.7rem;}
+    .board-container{max-height:130px;}
+}
     </style>
 </head>
 <body>
@@ -625,3 +641,4 @@
 </script>
 </body>
 </html>
+
