@@ -54,13 +54,27 @@ body{
 }
 
 /* Pe mobil, resetăm constrângerile pentru a fi full screen */
-@media (max-width: 600px) {
-    .app-container {
-        max-width: 100%;
-        max-height: 100%;
-        border-radius: 0;
-        height: 100vh;
+/* Mobile Tweaks - AICI MODIFICI PENTRU TELEFON */
+@media (max-height: 700px) {
+    .logo { font-size: 2.2rem; margin-bottom: 15px; }
+    
+    .word-card { 
+        min-height: 180px; 
+        padding: 15px; 
+        /* AICI: Distanța dintre card și butoane */
+        margin-bottom: 10px; 
     }
+    
+    .word-text { font-size: 2rem; }
+    
+    .controls { 
+        height: 60px; 
+        /* AICI: Foarte important! Scoatem 'auto' și punem 0 sau 5px */
+        margin-top: 5px !important; 
+    }
+    
+    .board-container { max-height: 110px; }
+    .tile { width: 26px; height: 26px; }
 }
 
 /* ================== SCREENS ================== */
@@ -766,5 +780,6 @@ input[type="text"] { text-align: left; }
 </script>
 </body>
 </html>
+
 
 
